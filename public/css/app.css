@@ -2696,21 +2696,21 @@ fieldset:disabled a.btn {
 
 .btn-primary {
   color: #fff;
-  background-color: #3490dc;
-  border-color: #3490dc;
+  background-color: #216353;
+  border-color: #216353;
 }
 
 .btn-primary:hover {
   color: #fff;
-  background-color: #227dc7;
-  border-color: #2176bd;
+  background-color: #f57b51;
+  border-color: #f57b51;
 }
 
 .btn-primary:focus,
 .btn-primary.focus {
   color: #fff;
-  background-color: #227dc7;
-  border-color: #2176bd;
+  background-color: #f57b51;
+  border-color: #f57b51;
   box-shadow: 0 0 0 0.2rem rgba(82, 161, 225, 0.5);
 }
 

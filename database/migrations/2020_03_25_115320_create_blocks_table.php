@@ -16,7 +16,6 @@ class CreateBlocksTable extends Migration
         Schema::create('blocks', function (Blueprint $table) {
             $table->id();
             $table->string('sequence', 10);
-            $table->unsignedInteger('size');
         });
     }
 

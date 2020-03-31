@@ -2,21 +2,17 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'login', 'email', 'password',
+        'name', 'slug', 'login', 'password',
     ];
 
     /**
@@ -28,12 +24,52 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function patients()
+    {
+        return $this->hasMany(Patient::class, 'hospital_id');
+    }
+
     /**
-     * The attributes that should be cast to native types.
+     * Get the route key for the model.
      *
-     * @var array
+     * @return string
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+ 
+        static::creating(function ($user) {
+            $latestSlug =
+            User::whereRaw("slug RLIKE '^{$user->slug}(--[0-9]*)?$'")
+                ->latest('id')
+                ->pluck('slug');
+            if ($latestSlug->first() != null) {
+                $pieces = explode('--', $latestSlug->first());
+                $number = intval(end($pieces));
+                $user->slug .= '--' . ($number + 1);
+            }
+        });
+ 
+        static::updating(function ($user) {
+            $oldUser = User::findOrFail($user->id);
+            if ($oldUser->name != $user->name) { // se o nome foi alterado, então altera slug também
+                $user->slug = str_slug($user->name);
+ 
+                $latestSlug =
+                User::whereRaw("slug RLIKE '^{$user->slug}(--[0-9]*)?$'")
+                    ->latest('id')
+                    ->pluck('slug');
+                if ($latestSlug->first() != null) {
+                    $pieces = explode('--', $latestSlug->first());
+                    $number = intval(end($pieces));
+                    $user->slug .= '--' . ($number + 1);
+                }
+            }
+        });
+    }
 }

@@ -35,7 +35,12 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/pacientes') }}">Pacientes já randomizados</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/pacientes/criar') }}">Randomizar novo paciente</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -47,7 +52,7 @@
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link" href="{{ route('register') }}">Cadastro</a>
                                 </li>
                             @endif
                         @else

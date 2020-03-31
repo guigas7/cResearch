@@ -28,9 +28,9 @@ class PatientsController extends Controller
      */
     public function index()
     {
-        $patients = Patient::select('name', 'ventilator', 'estudo', 'inserted_on')
+        $patients = Patient::select('name', 'slug', 'ventilator', 'study', 'inserted_on')
             ->orderBy('order')
-            ->where('user_id', '=', Auth::id())
+            ->where('hospital_id', '=', Auth::id())
             ->whereNotNull('name')
             ->get();
         $groups = ([
@@ -59,7 +59,7 @@ class PatientsController extends Controller
     public function store(Request $request)
     {
         // Busca se há paciente sem estudo
-        $next = Patient::where('user_id', '=', Auth::id())
+        $next = Patient::where('hospital_id', '=', Auth::id())
             ->whereNull('name')
             ->orderBy('order')
             ->first();
@@ -72,7 +72,7 @@ class PatientsController extends Controller
             $block = Block::findOrFail(rand(1, $max_block));
             // create patients for the randomized block
             for ($i = 0; $i < strlen($block->sequence); $i++) {
-                $order = Patient::where('user_id', '=', Auth::id())
+                $order = Patient::where('hospital_id', '=', Auth::id())
                     ->orderBy('order', 'desc')
                     ->first();
                 if (is_null($order)) { // Se não há nenhum registro
@@ -82,22 +82,22 @@ class PatientsController extends Controller
                 }
                 Patient::create([
                     'order' => $order,
-                    'user_id' => Auth::id(),
-                    'estudo' => ($block->sequence[$i] == 'Y' ? 1 : 0),
+                    'hospital_id' => Auth::id(),
+                    'study' => ($block->sequence[$i] == 'Y' ? 1 : 0),
                 ]);
-                $next = Patient::where('user_id', '=', Auth::id())
+                $next = Patient::where('hospital_id', '=', Auth::id())
                     ->whereNull('name')
                     ->orderBy('order')
                     ->first();
             }
         }
         // Se há paciente para preencher
-        $next->ventilator = $request->ventilator;
-        $next->name = $request->name;
-        $next->inserted_on = now().date('');
-        $next->save();
-        return redirect('/pacientes');
-
+        $next->update([
+            'ventilator' => $request->ventilator,
+            'name' => $request->name,
+            'inserted_on' => now().date(''),
+        ]);
+        return redirect(route('patients.show', $next));
     }
 
     /**
@@ -108,7 +108,11 @@ class PatientsController extends Controller
      */
     public function show(Patient $patient)
     {
-        //
+        if ($patient->hospital->id == Auth::id()) {
+            return view('patients.show', compact('patient'));
+        } else {
+            return redirect(route('patients.index'));
+        }
     }
 
     /**
@@ -119,7 +123,7 @@ class PatientsController extends Controller
      */
     public function edit(Patient $patient)
     {
-        
+        //   
     }
 
     /**
