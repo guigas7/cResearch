@@ -58,39 +58,49 @@ class PatientsController extends Controller
      */
     public function store(Request $request)
     {
+        $hospital = Auth::user();
         // Busca se há paciente sem estudo
-        $next = Patient::where('hospital_id', '=', Auth::id())
-            ->whereNull('name')
-            ->orderBy('order')
-            ->first();
+        $next = $hospital->nextEmptySlot();
         // Se não há paciente para preencher
         if (is_null($next)) {
-            // Gera novo bloco
-            $max_block = Block::select('id')
-                ->orderBy('id', 'DESC')
-                ->first()->id;
+            // -- Gera novo bloco
+            $max_block = $hospital->maxBlock();
+            // randomiza bloco
             $block = Block::findOrFail(rand(1, $max_block));
-            // create patients for the randomized block
-            for ($i = 0; $i < strlen($block->sequence); $i++) {
-                $order = Patient::where('hospital_id', '=', Auth::id())
-                    ->orderBy('order', 'desc')
-                    ->first();
-                if (is_null($order)) { // Se não há nenhum registro
-                    $order = 1;
-                } else {
-                    $order = $order->order + 1;
-                }
+            // cria pacientes para o novo bloco randomizado
+            $size = strlen($block->sequence);
+            for ($i = 0; $i < $size; $i++) {
+                $order = $hospital->getNextOrder();
                 Patient::create([
                     'order' => $order,
-                    'hospital_id' => Auth::id(),
+                    'hospital_id' => $hospital->id,
                     'study' => ($block->sequence[$i] == 'Y' ? 1 : 0),
                 ]);
-                $next = Patient::where('hospital_id', '=', Auth::id())
-                    ->whereNull('name')
-                    ->orderBy('order')
-                    ->first();
+                $next = $hospital->nextEmptySlot();
             }
         }
+
+        request()->validate([
+            'name' => 'required',
+            'ventilator' => 'required|boolean',
+            'tcle' => 'required|accepted',
+            'age' => 'required|accepted',
+            'internado' => 'required|accepted',
+            'coleta' => 'required|accepted',
+            'sintomas' => 'required',
+            'sintomas.*' => 'in:coriza,tosse,garganta,febre',
+            'gravidade' => 'required',
+            'gravidade.*' => 'in:radiografia,estertores,oxigeoterapia,ventilacao',
+            'gravido' => 'required|accepted',
+            'esfoliativa' => 'required|accepted',
+            'porfiria' => 'required|accepted',
+            'epilepsia' => 'required|accepted',
+            'miastenia' => 'required|accepted',
+            'glicose' => 'required|accepted',
+            'hepatica' => 'required|accepted',
+            'renal' => 'required|accepted',
+            'cloroquina' => 'required|accepted',
+        ]);
         // Se há paciente para preencher
         $next->update([
             'ventilator' => $request->ventilator,

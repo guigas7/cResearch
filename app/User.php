@@ -5,9 +5,76 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Patient;
+use App\Block;
+use App\User;
 
 class User extends Authenticatable
 {
+    public static function boot()
+    {
+        parent::boot();
+ 
+        static::created(function ($user) {
+            if (!is_null($user->name)) {
+                dd($user);
+                $user->slug = str_slug($user->name);
+     
+                $latestSlug =
+                User::whereRaw("slug RLIKE '^{$user->slug}(--[0-9]*)?$'")
+                    ->latest('id')
+                    ->pluck('slug');
+                if ($latestSlug->first() != null) {
+                    $pieces = explode('--', $latestSlug->first());
+                    $number = intval(end($pieces));
+                    $user->slug .= '--' . ($number + 1);
+                }
+            }
+        });
+ 
+        static::updating(function ($user) {
+            $olduser = User::findOrFail($user->id);
+            if ($olduser->name != $user->name) { // se o nome foi alterado, então altera slug também
+                $user->slug = str_slug($user->name);
+ 
+                $latestSlug =
+                User::whereRaw("slug RLIKE '^{$user->slug}(--[0-9]*)?$'")
+                    ->latest('id')
+                    ->pluck('slug');
+                if ($latestSlug->first() != null) {
+                    $pieces = explode('--', $latestSlug->first());
+                    $number = intval(end($pieces));
+                    $user->slug .= '--' . ($number + 1);
+                }
+            }
+        });
+    }
+
+    public function nextEmptySlot()
+    {
+        return Patient::where('hospital_id', '=', $this->id)
+            ->whereNull('name')
+            ->orderBy('order')
+            ->first();
+    }
+
+    public function maxBlock()
+    {
+        return Block::select('id')
+            ->orderBy('id', 'DESC')
+            ->first()
+            ->id;
+    }
+
+    public function getNextOrder()
+    {
+        $next = Patient::select('order')
+            ->where('hospital_id', '=', $this->id)
+            ->orderBy('order', 'desc')
+            ->first();
+        return is_null($next) ? 1 : $next->order + 1;
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -48,39 +115,5 @@ class User extends Authenticatable
     public function getRouteKeyName()
     {
         return 'slug';
-    }
-
-    public static function boot()
-    {
-        parent::boot();
- 
-        static::creating(function ($user) {
-            $latestSlug =
-            User::whereRaw("slug RLIKE '^{$user->slug}(--[0-9]*)?$'")
-                ->latest('id')
-                ->pluck('slug');
-            if ($latestSlug->first() != null) {
-                $pieces = explode('--', $latestSlug->first());
-                $number = intval(end($pieces));
-                $user->slug .= '--' . ($number + 1);
-            }
-        });
- 
-        static::updating(function ($user) {
-            $oldUser = User::findOrFail($user->id);
-            if ($oldUser->name != $user->name) { // se o nome foi alterado, então altera slug também
-                $user->slug = str_slug($user->name);
- 
-                $latestSlug =
-                User::whereRaw("slug RLIKE '^{$user->slug}(--[0-9]*)?$'")
-                    ->latest('id')
-                    ->pluck('slug');
-                if ($latestSlug->first() != null) {
-                    $pieces = explode('--', $latestSlug->first());
-                    $number = intval(end($pieces));
-                    $user->slug .= '--' . ($number + 1);
-                }
-            }
-        });
     }
 }

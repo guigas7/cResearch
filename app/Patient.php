@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Patient;
 
 class Patient extends Model
 {
@@ -36,6 +37,7 @@ class Patient extends Model
  
         static::creating(function ($patient) {
             if (!is_null($patient->name)) {
+                dd($patient);
                 $patient->slug = str_slug($patient->name);
      
                 $latestSlug =
