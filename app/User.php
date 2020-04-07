@@ -50,10 +50,11 @@ class User extends Authenticatable
         });
     }
 
-    public function nextEmptySlot()
+    public function nextEmptySlot($group)
     {
         return Patient::where('hospital_id', '=', $this->id)
             ->whereNull('name')
+            ->where('ventilator', $group)
             ->orderBy('order')
             ->first();
     }

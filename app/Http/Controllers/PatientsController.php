@@ -58,9 +58,30 @@ class PatientsController extends Controller
      */
     public function store(Request $request)
     {
+        request()->validate([
+            'name' => 'required',
+            'ventilator' => 'required|boolean',
+            'tcle' => 'required|accepted',
+            'age' => 'required|accepted',
+            'internado' => 'required|accepted',
+            'coleta' => 'required|accepted',
+            'sintomas' => 'required',
+            'sintomas.*' => 'in:coriza,tosse,garganta,febre',
+            'gravidade' => 'required',
+            'gravidade.*' => 'in:radiografia,estertores,oxigenoterapia,ventilacao',
+            'gravido' => 'required|accepted',
+            'esfoliativa' => 'required|accepted',
+            'porfiria' => 'required|accepted',
+            'epilepsia' => 'required|accepted',
+            'miastenia' => 'required|accepted',
+            'glicose' => 'required|accepted',
+            'hepatica' => 'required|accepted',
+            'renal' => 'required|accepted',
+            'cloroquina' => 'required|accepted',
+        ]);
         $hospital = Auth::user();
         // Busca se há paciente sem estudo
-        $next = $hospital->nextEmptySlot();
+        $next = $hospital->nextEmptySlot($request->ventilator);
         // Se não há paciente para preencher
         if (is_null($next)) {
             // -- Gera novo bloco
@@ -73,37 +94,15 @@ class PatientsController extends Controller
                 $order = $hospital->getNextOrder();
                 Patient::create([
                     'order' => $order,
+                    'ventilator' => $request->ventilator,
                     'hospital_id' => $hospital->id,
                     'study' => ($block->sequence[$i] == 'Y' ? 1 : 0),
                 ]);
-                $next = $hospital->nextEmptySlot();
+                $next = $hospital->nextEmptySlot($request->ventilator);
             }
         }
-
-        request()->validate([
-            'name' => 'required',
-            'ventilator' => 'required|boolean',
-            'tcle' => 'required|accepted',
-            'age' => 'required|accepted',
-            'internado' => 'required|accepted',
-            'coleta' => 'required|accepted',
-            'sintomas' => 'required',
-            'sintomas.*' => 'in:coriza,tosse,garganta,febre',
-            'gravidade' => 'required',
-            'gravidade.*' => 'in:radiografia,estertores,oxigeoterapia,ventilacao',
-            'gravido' => 'required|accepted',
-            'esfoliativa' => 'required|accepted',
-            'porfiria' => 'required|accepted',
-            'epilepsia' => 'required|accepted',
-            'miastenia' => 'required|accepted',
-            'glicose' => 'required|accepted',
-            'hepatica' => 'required|accepted',
-            'renal' => 'required|accepted',
-            'cloroquina' => 'required|accepted',
-        ]);
         // Se há paciente para preencher
         $next->update([
-            'ventilator' => $request->ventilator,
             'name' => $request->name,
             'inserted_on' => now().date(''),
         ]);
