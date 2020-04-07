@@ -50,10 +50,10 @@ class User extends Authenticatable
         });
     }
 
-    public function nextEmptySlot($group)
+    public function nextEmptySlot($group, $hospital_id)
     {
-        return Patient::where('hospital_id', '=', $this->id)
-            ->whereNull('name')
+        return Patient::where('hospital_id', '=', $hospital_id)
+            ->whereNull('prontuario')
             ->where('ventilator', $group)
             ->orderBy('order')
             ->first();
@@ -67,10 +67,10 @@ class User extends Authenticatable
             ->id;
     }
 
-    public function getNextOrder()
+    public function getNextOrder($hospital_id)
     {
         $next = Patient::select('order')
-            ->where('hospital_id', '=', $this->id)
+            ->where('hospital_id', '=', $hospital_id)
             ->orderBy('order', 'desc')
             ->first();
         return is_null($next) ? 1 : $next->order + 1;
@@ -82,30 +82,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'slug', 'login', 'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
+        'name', 'slug',
     ];
 
     public function patients()
     {
-        return $this->hasMany(Patient::class, 'hospital_id');
+        return $this->hasMany('App\Patient', 'hospital_id');
     }
 
     /**

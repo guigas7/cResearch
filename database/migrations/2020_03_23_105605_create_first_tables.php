@@ -20,8 +20,8 @@ class CreateFirstTables extends Migration
             $table->unsignedInteger('order');
             $table->unsignedBigInteger('hospital_id')->nullable();     
             $table->boolean('ventilator')->nullable();
-            $table->string('name', 100)->nullable();
-            $table->string('slug', 110)->unique()->nullable();
+            $table->string('prontuario', 50)->nullable();
+            $table->string('slug', 60)->unique()->nullable();
             $table->boolean('study');
             $table->timestamp('inserted_on')->nullable();
             $table->timestamps();

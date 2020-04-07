@@ -12,7 +12,7 @@
     <div class="row justify-content-center">
         <div class="content">
             <div class="title" style="width: 100%">
-                {{ Auth::user()->name}}
+                Cepeti
             </div>
             <dl class="m-b-md">
                 <dt class="cloroquina">[Verde]</dt>
@@ -28,7 +28,7 @@
                             @foreach ($patients as $patient)
                                 @if ($patient->ventilator == $key)
                                     <li>
-                                        <h3><a class="{{$patient->study ? 'cloroquina' : 'controle'}}" href="{{ route('patients.show', $patient) }}">{{ $patient->name }}</a></h3>
+                                        <h3><a class="{{$patient->study ? 'cloroquina' : 'controle'}}" href="{{ route('patients.show', $patient) }}">{{ $patient->prontuario }} ({{$patient->hospital->name}})</a></h3>
                                         <p>{{ $patient->inserted_on }}</p>
                                     </li>
                                 @endif

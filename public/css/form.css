@@ -74,11 +74,13 @@ html, body {
     margin-bottom: 30px;
 }
 
-.container {
-    max-width: 100%
+.content {
+    max-width: 1400px;
     min-width: 350px;
     padding-left: 0px;
     padding-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .py-4 {

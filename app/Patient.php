@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Patient;
+use App\User;
 
 class Patient extends Model
 {
@@ -13,12 +14,12 @@ class Patient extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'slug', 'ventilator', 'order', 'hospital_id', 'study', 'inserted_on'
+        'prontuario', 'slug', 'ventilator', 'order', 'hospital_id', 'study', 'inserted_on'
     ];
 
     public function hospital()
     {
-    	return $this->belongsTo(User::class, 'hospital_id');
+    	return $this->belongsTo('App\User', 'hospital_id');
     }
 
     /**
@@ -36,9 +37,9 @@ class Patient extends Model
         parent::boot();
  
         static::creating(function ($patient) {
-            if (!is_null($patient->name)) {
+            if (!is_null($patient->prontuario)) {
                 dd($patient);
-                $patient->slug = str_slug($patient->name);
+                $patient->slug = str_slug($patient->prontuario);
      
                 $latestSlug =
                 Patient::whereRaw("slug RLIKE '^{$patient->slug}(--[0-9]*)?$'")
@@ -54,8 +55,8 @@ class Patient extends Model
  
         static::updating(function ($patient) {
             $oldpatient = Patient::findOrFail($patient->id);
-            if ($oldpatient->name != $patient->name) { // se o nome foi alterado, então altera slug também
-                $patient->slug = str_slug($patient->name);
+            if ($oldpatient->prontuario != $patient->prontuario) { // se o nome foi alterado, então altera slug também
+                $patient->slug = str_slug($patient->prontuario);
  
                 $latestSlug =
                 Patient::whereRaw("slug RLIKE '^{$patient->slug}(--[0-9]*)?$'")
