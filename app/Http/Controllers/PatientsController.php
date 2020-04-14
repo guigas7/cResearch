@@ -82,7 +82,7 @@ class PatientsController extends Controller
         // Send email
         $content = 'Paciente ' . $next->prontuario . ', do hospital ' . $next->hospital->name . ' foi randomizado para o grupo ' . ($next->study ? 'cloroquina' : 'controle') . '!';
         Mail::raw($content, function($message) {
-            $message->to('guilhermebbs14@outlook.com')
+            $message->to('randomizacao.cepeti@gmail.com')
             ->subject('Novo paciente');
         });
         //dd($next);
