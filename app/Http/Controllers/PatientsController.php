@@ -19,7 +19,7 @@ class PatientsController extends Controller
     public function index()
     {
         $patients = Patient::select('prontuario', 'slug', 'ventilator', 'study', 'inserted_on', 'hospital_id')
-            ->orderBy('id', 'DESC')
+            ->orderBy('inserted_on', 'DESC')
             ->with('hospital')
             ->whereNotNull('prontuario')
             ->get();
@@ -79,14 +79,48 @@ class PatientsController extends Controller
             'prontuario' => $request->prontuario,
             'inserted_on' => now().date(''),
         ]);
-        // Send email
         $content = 'Paciente ' . $next->prontuario . ', do hospital ' . $next->hospital->name . ' foi randomizado para o grupo ' . ($next->study ? 'cloroquina' : 'controle') . '!';
+        $show = $next;
+        // Se esvaziou, cria novamente
+        $next = $hospital->nextEmptySlot($request->ventilator, $hospital->id);
+        if (is_null($next)) {
+            // -- Gera novo bloco
+            $max_block = $hospital->maxBlock();
+            // randomiza bloco
+            $block = Block::findOrFail(rand(1, $max_block));
+            // cria pacientes para o novo bloco randomizado
+            $size = strlen($block->sequence);
+            for ($i = 0; $i < $size; $i++) {
+                $order = $hospital->getNextOrder($hospital->id);
+                Patient::create([
+                    'order' => $order,
+                    'ventilator' => $request->ventilator,
+                    'hospital_id' => $hospital->id,
+                    'study' => ($block->sequence[$i] == 'Y' ? 1 : 0),
+                ]);
+            }
+        } // não preenche nenhum dos blocos novos
+        // Makes email
+        $users = User::all();
+        foreach ($users as $us) {
+            $content .= "\n ---" . $us->name . "---\n";
+            for ($groups = 1; $groups >=0; $groups--) {
+                $content.= ($groups == 1 ? "\tCom Ventilação: " : "\tSem Ventilação: ");
+                $p = $us->patients->whereNull('prontuario')
+                    ->sortBy('order')
+                    ->where('ventilator', $groups);
+                foreach ($p as $pat) {
+                    $content .= ($pat->study == 1 ? 'cloroquina. ' : 'controle. ');
+                }
+                $content .= "\n";
+            }
+        }
+        // Send email
         Mail::raw($content, function($message) {
-            $message->to('randomizacao.cepeti@gmail.com')
+            $message->to('jimhorton7@outlook.com')
             ->subject('Novo paciente');
         });
-        //dd($next);
-        return redirect(route('patients.show', $next));
+        return redirect(route('patients.show', $show));
     }
 
     /**
