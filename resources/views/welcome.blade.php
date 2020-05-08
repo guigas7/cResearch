@@ -35,8 +35,10 @@
                 </div>
 
                 <div class="links">
-                    <a class="options" href="{{ url('/pacientes') }}">Pacientes já randomizados</a>
-                    <a class="options" href="{{ url('/pacientes/criar') }}">Randomizar novo paciente</a>
+                    <a class="options" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados (Trial Cloroquina)</a>
+                    <a class="options" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente (Trial Cloroquina)</a>
+                    <a class="options" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados (Trial Prona)</a>
+                    <a class="options" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente (Trial Prona)</a>
                 </div>
             </div>
         </div>

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Patient;
+use Illuminate\Http\Request;
+use App\Clpatient;
 use App\Block;
 use App\User;
+use App\Hospital;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Http\Request;
 
-class PatientsController extends Controller
+class ClpatientsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,7 +19,7 @@ class PatientsController extends Controller
      */
     public function index()
     {
-        $patients = Patient::select('prontuario', 'slug', 'ventilator', 'study', 'inserted_on', 'hospital_id')
+        $patients = Clpatient::select('prontuario', 'slug', 'ventilator', 'study', 'inserted_on', 'hospital_id')
             ->orderBy('inserted_on', 'DESC')
             ->with('hospital')
             ->whereNotNull('prontuario')
@@ -30,7 +31,7 @@ class PatientsController extends Controller
             1 => "Com Ventilação",
             0 => "Sem Ventilação"
         ]);
-        return view('patients.index', compact('patients', 'groups'));
+        return view('clpatients.index', compact('patients', 'groups'));
     }
 
     /**
@@ -40,8 +41,8 @@ class PatientsController extends Controller
      */
     public function create()
     {
-        $hospitais = User::select('id', 'name')->get();
-        return view('patients.create', compact('hospitais'));
+        $hospitais = Hospital::select('id', 'name')->get();
+        return view('clpatients.create', compact('hospitais'));
     }
 
     /**
@@ -52,9 +53,9 @@ class PatientsController extends Controller
      */
     public function store(Request $request)
     {
-        $hospital = User::findOrFail($request->hospital);
+        $hospital = Hospital::findOrFail($request->hospital);
         // Busca se há paciente sem estudo
-        $next = $hospital->nextEmptySlot($request->ventilator, $hospital->id);
+        $next = $hospital->nextEmptySlotCl($request->ventilator, $hospital->id);
         // Se não há paciente para preencher
         if (is_null($next)) {
             // -- Gera novo bloco
@@ -64,14 +65,14 @@ class PatientsController extends Controller
             // cria pacientes para o novo bloco randomizado
             $size = strlen($block->sequence);
             for ($i = 0; $i < $size; $i++) {
-                $order = $hospital->getNextOrder($hospital->id);
-                Patient::create([
+                $order = $hospital->getNextOrderCl($hospital->id);
+                Clpatient::create([
                     'order' => $order,
                     'ventilator' => $request->ventilator,
                     'hospital_id' => $hospital->id,
                     'study' => ($block->sequence[$i] == 'Y' ? 1 : 0),
                 ]);
-                $next = $hospital->nextEmptySlot($request->ventilator, $hospital->id);
+                $next = $hospital->nextEmptySlotCl($request->ventilator, $hospital->id);
             }
         }
         // Se há paciente para preencher
@@ -82,7 +83,7 @@ class PatientsController extends Controller
         $content = 'Paciente ' . $next->prontuario . ', do hospital ' . $next->hospital->name . ' foi randomizado para o grupo ' . ($next->study ? 'cloroquina' : 'controle') . '!';
         $show = $next;
         // Se esvaziou, cria novamente
-        $next = $hospital->nextEmptySlot($request->ventilator, $hospital->id);
+        $next = $hospital->nextEmptySlotCl($request->ventilator, $hospital->id);
         if (is_null($next)) {
             // -- Gera novo bloco
             $max_block = $hospital->maxBlock();
@@ -91,8 +92,8 @@ class PatientsController extends Controller
             // cria pacientes para o novo bloco randomizado
             $size = strlen($block->sequence);
             for ($i = 0; $i < $size; $i++) {
-                $order = $hospital->getNextOrder($hospital->id);
-                Patient::create([
+                $order = $hospital->getNextOrderCl($hospital->id);
+                Clpatient::create([
                     'order' => $order,
                     'ventilator' => $request->ventilator,
                     'hospital_id' => $hospital->id,
@@ -101,12 +102,12 @@ class PatientsController extends Controller
             }
         } // não preenche nenhum dos blocos novos
         // Makes email
-        $users = User::all();
-        foreach ($users as $us) {
-            $content .= "\n ---" . $us->name . "---\n";
+        $hospitals = Hospital::all();
+        foreach ($hospitals as $hosp) {
+            $content .= "\n ---" . $hosp->name . "---\n";
             for ($groups = 1; $groups >=0; $groups--) {
                 $content.= ($groups == 1 ? "\tCom Ventilação: " : "\tSem Ventilação: ");
-                $p = $us->patients->whereNull('prontuario')
+                $p = $hosp->patientsCl->whereNull('prontuario')
                     ->sortBy('order')
                     ->where('ventilator', $groups);
                 foreach ($p as $pat) {
@@ -120,7 +121,7 @@ class PatientsController extends Controller
             $message->to('jimhorton7@outlook.com')
             ->subject('Novo paciente');
         });
-        return redirect(route('patients.show', $show));
+        return redirect(route('clpatients.show', $show));
     }
 
     /**
@@ -129,9 +130,9 @@ class PatientsController extends Controller
      * @param  \App\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function show(Patient $patient)
+    public function show(Clpatient $patient)
     {
-        return view('patients.show', compact('patient'));
+        return view('clpatients.show', compact('patient'));
     }
 
     /**
@@ -140,7 +141,7 @@ class PatientsController extends Controller
      * @param  \App\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function edit(Patient $patient)
+    public function edit(Clpatient $patient)
     {
         //   
     }
@@ -152,7 +153,7 @@ class PatientsController extends Controller
      * @param  \App\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Patient $patient)
+    public function update(Request $request, Clpatient $patient)
     {
         //
     }
@@ -163,7 +164,7 @@ class PatientsController extends Controller
      * @param  \App\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Patient $patient)
+    public function destroy(Clpatient $patient)
     {
         //
     }

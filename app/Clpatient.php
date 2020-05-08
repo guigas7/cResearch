@@ -3,10 +3,10 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Patient;
-use App\User;
+use App\Clpatient;
+use App\Hospital;
 
-class Patient extends Model
+class Clpatient extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -19,7 +19,7 @@ class Patient extends Model
 
     public function hospital()
     {
-    	return $this->belongsTo('App\User', 'hospital_id');
+    	return $this->belongsTo('App\Hospital', 'hospital_id');
     }
 
     /**
@@ -36,36 +36,35 @@ class Patient extends Model
     {
         parent::boot();
  
-        static::creating(function ($patient) {
-            if (!is_null($patient->prontuario)) {
-                dd($patient);
-                $patient->slug = str_slug($patient->prontuario);
+        static::creating(function ($cl_patient) {
+            if (!is_null($cl_patient->prontuario)) {
+                $cl_patient->slug = str_slug($cl_patient->prontuario);
      
                 $latestSlug =
-                Patient::whereRaw("slug RLIKE '^{$patient->slug}(--[0-9]*)?$'")
+                Clpatient::whereRaw("slug RLIKE '^{$cl_patient->slug}(--[0-9]*)?$'")
                     ->latest('id')
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
                     $number = intval(end($pieces));
-                    $patient->slug .= '--' . ($number + 1);
+                    $cl_patient->slug .= '--' . ($number + 1);
                 }
             }
         });
  
-        static::updating(function ($patient) {
-            $oldpatient = Patient::findOrFail($patient->id);
-            if ($oldpatient->prontuario != $patient->prontuario) { // se o nome foi alterado, então altera slug também
-                $patient->slug = str_slug($patient->prontuario);
+        static::updating(function ($cl_patient) {
+            $oldpatient = Clpatient::findOrFail($cl_patient->id);
+            if ($oldpatient->prontuario != $cl_patient->prontuario) { // se o nome foi alterado, então altera slug também
+                $cl_patient->slug = str_slug($cl_patient->prontuario);
  
                 $latestSlug =
-                Patient::whereRaw("slug RLIKE '^{$patient->slug}(--[0-9]*)?$'")
+                Clpatient::whereRaw("slug RLIKE '^{$cl_patient->slug}(--[0-9]*)?$'")
                     ->latest('id')
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
                     $number = intval(end($pieces));
-                    $patient->slug .= '--' . ($number + 1);
+                    $cl_patient->slug .= '--' . ($number + 1);
                 }
             }
         });
