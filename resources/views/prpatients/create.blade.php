@@ -13,17 +13,17 @@
 </style>
 @section('content')
 <div class="content">
-    <div class="title controle m-b-md" style="width: 100%">
-        Cepeti
+    <div class="title pcontrole m-b-md" style="width: 100%">
+        Trial Prona
     </div>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Randomizar novo paciente') }}</div>
+                <div class="card-header col-form-label">{{ __('Randomizar novo paciente') }}</div>
 
                 <div class="card-body">
                     <div class="cent">
-                        <form method="POST" action="/pacientes">
+                        <form method="POST" action="/pr/pacientes">
                         @csrf
 
                         <div class="form-group row">
@@ -54,25 +54,31 @@
                         </div>
                         <hr>
 
-                        <div class="form-group row mb-0">
-                            <label for="ventilator" class="col-md-5 col-form-label text-md-center">{{ __('Este paciente está em intubação e em ventilação mecânica?') }}</label>
+                        @guest
+                        <div class="form-group row">
+                            <div class="col-md-5">
+                                <label for="password" class="col-form-label text-md-center">{{ __('Chave de acesso') }}</label>
+                                <br>
+                                <p class="description text-md-center">pode ser encontrada no formulário do redcap</p>
+                            </div>
+                            
 
-                            <div class="col-md-2">
-                                <p>
-                                    <input type="radio" id="vent-on" name="ventilator" required value="1">
-                                    <label for="vent-on">Sim</label>
-                                </p>
-                                <p>
-                                    <input type="radio" id="vent-off" name="ventilator" value="0">
-                                    <label for="vent-off">Não</label>
-                                </p>
+                            <div class="col-md-5">
+                                <input id="password" type="text" class="form-control @error('password') is-invalid @enderror" name="password" value="{{ old('password') }}" required autofocus>
+
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
                         <hr>
+                        @endguest
                         <br>
 
                         <div class="form-group row mb-0">
-                            <button id="enviar" type="submit" class="btn btn-primary bt">
+                            <button id="enviar" type="submit" class="btn btn-primary pbt">
                                 {{ __('Randomizar') }}
                             </button>
                         </div>
@@ -83,6 +89,9 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="title pcontrole m-b-md" style="width: 100%">
+        Trial Prona
     </div>
 </div>
 @endsection

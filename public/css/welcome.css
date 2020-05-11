@@ -49,6 +49,30 @@ html, body {
     margin-bottom: 30px;
 }
 
-.options:hover {
-    color: #f57b51;
+.cloroquina:hover {
+    color: #f57b51!important;
+}
+
+.cloroquina {
+    color: #216353!important;
+}
+
+.controle {
+    color: #f57b51!important;
+}
+
+.prona:hover {
+    color: #CA2E55!important;
+}
+
+.prona {
+    color: #0B1D51!important;
+}
+
+.pcontrole {
+    color: #CA2E55!important;
+}
+
+.up {
+  margin-top: -15%;
 }

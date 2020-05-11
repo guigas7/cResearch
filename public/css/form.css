@@ -110,6 +110,25 @@ p {
 .bt {
     margin-right: auto;
     margin-left: auto;
+    background-color: #216353;
+    border-color: #216353;
+}
+
+.bt:hover {
+    background-color: #f57b51;
+    border-color: #f57b51;
+}
+
+.pbt {
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #0B1D51;
+    border-color: #0B1D51;
+}
+
+.pbt:hover {
+    background-color: #CA2E55;
+    border-color: #CA2E55;
 }
 
 .cent {
@@ -176,4 +195,8 @@ p {
 
 .col-form-label {
     font-weight: bold;
+}
+
+.description {
+    color: #586069;
 }

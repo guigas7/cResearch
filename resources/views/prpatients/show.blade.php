@@ -12,7 +12,7 @@
     <div class="row justify-content-center">
         <div class="content">
             <div class="title" style="width: 100%">
-                O paciente <span class="{{ $patient->study ? 'cloroquina' : 'controle' }}"><b>{{ $patient->prontuario }}</b></span> foi alocado para o grupo <span class="{{ $patient->study ? 'cloroquina' : 'controle' }}"><b>{{ $patient->study ? 'Cloroquina' : 'Controle' }}</b></span>
+                O paciente <span class="{{ $patient->study ? 'prona' : 'pcontrole' }}"><b>{{ $patient->prontuario }}</b></span> foi alocado para o grupo <span class="{{ $patient->study ? 'prona' : 'pcontrole' }}"><b>{{ $patient->study ? 'Prona' : 'Controle' }}</b></span>
             </div>
         </div>
     </div>

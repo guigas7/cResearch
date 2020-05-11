@@ -12,7 +12,7 @@
     <div class="row justify-content-center">
         <div class="content">
             <div class="title" style="width: 100%">
-                Cepeti - Trial Cloroquina
+                Trial Cloroquina
             </div>
             <dl class="m-b-md">
                 <dt class="cloroquina">[Verde]</dt>

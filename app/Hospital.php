@@ -46,12 +46,19 @@ class Hospital extends Model
         });
     }
 
-    public function nextEmptySlotCl($group, $hospital_id)
+    public function nextEmptySlotCl($group) // grab patients
     {
-        return Clpatient::where('hospital_id', '=', $hospital_id)
-            ->whereNull('prontuario')
-            ->where('ventilator', $group)
-            ->orderBy('order')
+        return Clpatient::where('hospital_id', '=', $this->id) // in the same hospital
+            ->where('ventilator', $group) // in the same vent group
+            ->whereNull('prontuario') // only empty ones
+            ->orderBy('id') // first of them
+            ->first();
+    }
+
+    public function nextEmptySlotPr() // grab patients
+    {
+        return Prpatient::whereNull('prontuario') // no groups, so only empty ones
+            ->orderBy('id') // first of them
             ->first();
     }
 
@@ -63,11 +70,20 @@ class Hospital extends Model
             ->id;
     }
 
-    public function getNextOrderCl($hospital_id)
+    public function getNextOrderCl()
     {
-        $next = Clpatient::select('order')
-            ->where('hospital_id', '=', $hospital_id)
-            ->orderBy('order', 'desc')
+        $next = Clpatient::select('order') // grab order
+            ->where('hospital_id', '=', $this->id) // in the same hospital
+            // ->where('ventilator', $group) // this wasn't here first by mistake so i don't want to break it now
+            ->orderBy('id', 'desc') // last one
+            ->first();
+        return is_null($next) ? 1 : $next->order + 1;
+    }
+
+    public function getNextOrderPr()
+    {
+        $next = Prpatient::select('order') // grab order
+            ->orderBy('id', 'desc') // last one
             ->first();
         return is_null($next) ? 1 : $next->order + 1;
     }
@@ -84,6 +100,11 @@ class Hospital extends Model
     public function patientsCl()
     {
         return $this->hasMany('App\Clpatient', 'hospital_id');
+    }
+
+    public function patientsPr()
+    {
+        return $this->hasMany('App\Prpatient', 'hospital_id');
     }
 
     /**
