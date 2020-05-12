@@ -9,6 +9,7 @@ use App\User;
 use App\Hospital;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class PrpatientsController extends Controller
 {
@@ -37,7 +38,7 @@ class PrpatientsController extends Controller
      */
     public function create()
     {
-        $hospitais = Hospital::select('id', 'name')->get();
+        $hospitais = Hospital::select('id', 'name')->where('pr', 1)->get();
         return view('prpatients.create', compact('hospitais'));
     }
 
@@ -49,7 +50,7 @@ class PrpatientsController extends Controller
      */
     public function store(Request $request)
     {
-        $credentials = ['login' => 'admin']; // fixed user
+        $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
             // Authentication passed...

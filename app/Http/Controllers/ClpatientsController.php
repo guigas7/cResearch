@@ -42,7 +42,7 @@ class ClpatientsController extends Controller
      */
     public function create()
     {
-        $hospitais = Hospital::select('id', 'name')->get();
+        $hospitais = Hospital::select('id', 'name')->where('cl', 1)->get();
         return view('clpatients.create', compact('hospitais'));
     }
 
@@ -54,7 +54,7 @@ class ClpatientsController extends Controller
      */
     public function store(Request $request)
     {
-        $credentials = ['login' => 'admin']; // fixed user
+        $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
             // Authentication passed...
