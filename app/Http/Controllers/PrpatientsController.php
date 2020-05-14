@@ -68,7 +68,6 @@ class PrpatientsController extends Controller
                     $order = $hospital->getNextOrderPr();
                     Prpatient::create([
                         'order' => $order,
-                        'hospital_id' => $hospital->id,
                         'study' => ($block->sequence[$i] == 'Y' ? 1 : 0),
                     ]);
                     $next = $hospital->nextEmptySlotPr();
@@ -77,6 +76,7 @@ class PrpatientsController extends Controller
             // Se há paciente para preencher
             $next->update([
                 'prontuario' => $request->prontuario,
+                'hospital_id' => $hospital->id,
                 'inserted_on' => now().date(''),
             ]);
             $content = 'Paciente ' . $next->prontuario . ', do hospital ' . $next->hospital->name . ' foi randomizado para o grupo ' . ($next->study ? 'Prona' : 'controle') . '!';
@@ -94,7 +94,6 @@ class PrpatientsController extends Controller
                     $order = $hospital->getNextOrderPr();
                     Prpatient::create([
                         'order' => $order,
-                        'hospital_id' => $hospital->id,
                         'study' => ($block->sequence[$i] == 'Y' ? 1 : 0),
                     ]);
                 }
