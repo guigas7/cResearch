@@ -27,3 +27,6 @@ Route::get('/pr/pacientes/{patient}', 'PrpatientsController@show')->name('prpati
 
 Auth::routes(['verify' => false, 'reset' => false, 'register' => false]);
 // , 'register' => false
+
+// admin => view all, randomize, search, edit, undo
+// plantonista => randomiza, search
