@@ -205,10 +205,12 @@ class ClpatientsController extends Controller
             // Authentication passed...
             $hospital = Hospital::findOrFail($request->hospital);
             $patient = $hospital->findPatientCl($request->prontuario);
-        if ($patient == null)
-            $message = 'Paciente ' + $request->prontuario + ' não foi encontrado no hospital ' + $hospital->name;
-            throw ValidationException::withMessages(['not_found' => $message]);
-        else
-            return view('clpatients.show', compact('patient'));
+            if ($patient == null) {
+                $message = 'Paciente ' + $request->prontuario + ' não foi encontrado no hospital ' + $hospital->name;
+                throw ValidationException::withMessages(['not_found' => $message]);
+            } else {
+                return view('clpatients.show', compact('patient'));
+            }
+        }
     }
 }
