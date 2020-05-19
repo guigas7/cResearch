@@ -5,10 +5,11 @@
 
     <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="/css/patients.css">
+    <link rel="stylesheet" type="text/css" href="/css/form.css">
 @endsection
 
 @section('content')
-<div class="container">
+<div class="container cent">
     <div class="row justify-content-center">
         <div class="content">
             <div class="title" style="width: 100%">
@@ -22,11 +23,6 @@
                         <form method="POST" action="/cl/pacientes/buscar">
                             @csrf
 
-                            @error('not_found')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
                             <div class="form-group row">
                                 <label for="prontuario" class="col-md-5 col-form-label text-md-center">{{ __('Número de prontuário do paciente') }}</label>
 

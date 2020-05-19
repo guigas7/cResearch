@@ -42,7 +42,7 @@ class ClpatientsController extends Controller
      */
     public function create()
     {
-        $hospitais = Hospital::select('id', 'name')->where('cl', 1)->get();
+        $hospitals = Hospital::select('id', 'name')->where('cl', 1)->get();
         return view('clpatients.create', compact('hospitals'));
     }
 
@@ -187,7 +187,7 @@ class ClpatientsController extends Controller
     public function search()
     {
         $hospitals = Hospital::select('id', 'name')->where('cl', 1)->get();
-        return view('clpatients.find', compact(hospitals));
+        return view('clpatients.search', compact('hospitals'));
     }
 
     /**
@@ -196,7 +196,7 @@ class ClpatientsController extends Controller
      * @param  \App\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function find()
+    public function find(Request $request)
     {
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
@@ -205,8 +205,8 @@ class ClpatientsController extends Controller
             $hospital = Hospital::findOrFail($request->hospital);
             $patient = $hospital->findPatientCl($request->prontuario);
             if ($patient == null) {
-                $message = 'Paciente ' + $request->prontuario + ' não foi encontrado no hospital ' + $hospital->name;
-                throw ValidationException::withMessages(['not_found' => $message]);
+                $message = 'Paciente ' . $request->prontuario . ' não foi randomizado em ' . $hospital->name;
+                throw ValidationException::withMessages(['prontuario' => $message]);
             } else {
                 return view('clpatients.show', compact('patient'));
             }

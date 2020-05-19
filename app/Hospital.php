@@ -90,7 +90,7 @@ class Hospital extends Model
 
     public function findPatientCl($prontuario)
     {
-        return Clpatient::where('prontuario', $prontuario)->get()->first();
+        return $this->patientsCl->where('prontuario', $prontuario)->first();
     }
 
     /**
