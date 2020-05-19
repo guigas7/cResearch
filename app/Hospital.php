@@ -88,6 +88,11 @@ class Hospital extends Model
         return is_null($next) ? 1 : $next->order + 1;
     }
 
+    public function findPatientCl($prontuario)
+    {
+        return Clpatient::where('prontuario', $prontuario)->get()->first();
+    }
+
     /**
      * The attributes that are mass assignable.
      *

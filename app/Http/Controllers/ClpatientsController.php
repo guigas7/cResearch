@@ -43,7 +43,7 @@ class ClpatientsController extends Controller
     public function create()
     {
         $hospitais = Hospital::select('id', 'name')->where('cl', 1)->get();
-        return view('clpatients.create', compact('hospitais'));
+        return view('clpatients.create', compact('hospitals'));
     }
 
     /**
@@ -176,5 +176,39 @@ class ClpatientsController extends Controller
     public function destroy(Clpatient $patient)
     {
         //
+    }
+
+    /**
+     * Show the form to search for a patient.
+     *
+     * @param  \App\Patient  $patient
+     * @return \Illuminate\Http\Response
+     */
+    public function search()
+    {
+        $hospitals = Hospital::select('id', 'name')->where('cl', 1)->get();
+        return view('clpatients.find', compact(hospitals));
+    }
+
+    /**
+     * finds specified patient.
+     *
+     * @param  \App\Patient  $patient
+     * @return \Illuminate\Http\Response
+     */
+    public function find()
+    {
+       
+        $credentials = ['login' => 'plantonista']; // fixed user
+        $credentials = array_merge($credentials, $request->only('password')); // gets access key
+        if (Auth::check() || Auth::attempt($credentials, 1)) {
+            // Authentication passed...
+            $hospital = Hospital::findOrFail($request->hospital);
+            $patient = $hospital->findPatientCl($request->prontuario);
+        if ($patient == null)
+            $message = 'Paciente ' + $request->prontuario + ' não foi encontrado no hospital ' + $hospital->name;
+            throw ValidationException::withMessages(['not_found' => $message]);
+        else
+            return view('clpatients.show', compact('patient'));
     }
 }

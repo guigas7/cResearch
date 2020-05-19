@@ -46,7 +46,7 @@
 
                             <div class="col-md-5">
                                 <select id="hospital" name="hospital">
-                                @foreach ($hospitais as $hospital)
+                                @foreach ($hospitals as $hospital)
                                     <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
                                 @endforeach
                             </select>

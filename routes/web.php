@@ -21,8 +21,8 @@ Route::get('/cl/pacientes/criar', 'ClpatientsController@create')->name('clpatien
 Route::post('/cl/pacientes/editar', 'ClpatientsController@update')->name('clpatients.update')->middleware('can:edit');
 Route::get('/cl/pacientes/editar/{patient}', 'ClpatientsController@edit')->name('clpatients.edit')->middleware('can:edit');
 Route::get('/cl/pacientes/{patient}', 'ClpatientsController@show')->name('clpatients.show')->middleware('can:search');
-Route::post('/cl/pacientes/busca', 'ClpatientsController@find')->name('clpatients.find')->middleware('can:search');
-Route::get('/cl/pacientes/busca', 'ClpatientsController@search')->name('clpatients.search')->middleware('can:search');
+Route::post('/cl/pacientes/buscar', 'ClpatientsController@find')->name('clpatients.find')->middleware('can:search');
+Route::get('/cl/pacientes/buscar', 'ClpatientsController@search')->name('clpatients.search')->middleware('can:search');
 
 Route::get('/pr/pacientes', 'PrpatientsController@index')->name('prpatients.index')->middleware('can:view_list');
 Route::post('/pr/pacientes/editar', 'PrpatientsController@update')->name('prpatients.update')->middleware('can:edit');
