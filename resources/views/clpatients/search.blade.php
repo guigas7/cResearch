@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
 @section('head')
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
     <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="/css/patients.css">
     <link rel="stylesheet" type="text/css" href="/css/form.css">
