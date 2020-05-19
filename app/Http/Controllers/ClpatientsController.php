@@ -198,7 +198,6 @@ class ClpatientsController extends Controller
      */
     public function find()
     {
-       
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {

@@ -21,8 +21,8 @@ Route::get('/cl/pacientes/criar', 'ClpatientsController@create')->name('clpatien
 Route::post('/cl/pacientes/editar', 'ClpatientsController@update')->name('clpatients.update')->middleware('can:edit');
 Route::get('/cl/pacientes/editar/{patient}', 'ClpatientsController@edit')->name('clpatients.edit')->middleware('can:edit');
 Route::get('/cl/pacientes/{patient}', 'ClpatientsController@show')->name('clpatients.show')->middleware('can:search');
-Route::post('/cl/pacientes/buscar', 'ClpatientsController@find')->name('clpatients.find')->middleware('can:search');
-Route::get('/cl/pacientes/buscar', 'ClpatientsController@search')->name('clpatients.search')->middleware('can:search');
+Route::post('/cl/pacientes/buscar', 'ClpatientsController@find')->name('clpatients.find');
+Route::get('/cl/pacientes/buscar', 'ClpatientsController@search')->name('clpatients.search');
 
 Route::get('/pr/pacientes', 'PrpatientsController@index')->name('prpatients.index')->middleware('can:view_list');
 Route::post('/pr/pacientes/editar', 'PrpatientsController@update')->name('prpatients.update')->middleware('can:edit');
@@ -30,8 +30,8 @@ Route::get('/pr/pacientes/editar/{patient}', 'PrpatientsController@edit')->name(
 Route::post('/pr/pacientes', 'PrpatientsController@store')->name('prpatients.store');
 Route::get('/pr/pacientes/criar', 'PrpatientsController@create')->name('prpatients.create');
 Route::get('/pr/pacientes/{patient}', 'PrpatientsController@show')->name('prpatients.show')->middleware('can:search');
-Route::post('/pr/pacientes/busca', 'PrpatientsController@find')->name('prpatients.find')->middleware('can:search');
-Route::get('/pr/pacientes/busca', 'PrpatientsController@search')->name('prpatients.search')->middleware('can:search');
+Route::post('/pr/pacientes/busca', 'PrpatientsController@find')->name('prpatients.find');
+Route::get('/pr/pacientes/busca', 'PrpatientsController@search')->name('prpatients.search');
 
 Auth::routes(['verify' => false, 'reset' => false, 'register' => false]);
 // , 'register' => false

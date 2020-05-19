@@ -44,6 +44,7 @@
                                     <a class="dropdown-item" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados</a>
                                 @endcan
                                 <a class="dropdown-item" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente</a>
+                                <a class="dropdown-item" href="{{ url('/cl/pacientes/buscar') }}">Buscar paciente</a>
                             </div>
                         </li>
 
@@ -56,6 +57,7 @@
                                     <a class="dropdown-item" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados</a>
                                 @endcan
                                 <a class="dropdown-item" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente</a>
+                                <a class="dropdown-item" href="{{ url('/pr/pacientes/buscar') }}">Buscar paciente</a>
                             </div>
                         </li>
                     </ul>
