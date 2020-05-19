@@ -15,7 +15,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="content">
-            <div class="title controle m-b-md" style="width: 100%">
+            <div class="title pcontrole m-b-md" style="width: 100%">
                 Trial Prona
             </div>
             <div class="cent fixedw">

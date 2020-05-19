@@ -1,20 +1,13 @@
 @extends('layouts.app')
 
 @section('head')
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Cepeti - Estudo</title>
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
     <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="/css/welcome.css">
 
 @endsection
 @section('content')
-    <div class="flex-center full-height">
+<div class="container">
+    <div class="row justify-content-center">
         <div class="content up">
             <div class="title m-b-md">
                 Cepeti
@@ -48,4 +41,5 @@
             </div>
         </div>
     </div>
+</div>
 @endsection

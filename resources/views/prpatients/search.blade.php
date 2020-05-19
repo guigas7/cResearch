@@ -12,8 +12,8 @@
 <div class="container cent">
     <div class="row justify-content-center">
         <div class="content">
-            <div class="title" style="width: 100%">
-                Trial Cloroquina
+            <div class="title pcontrole m-b-md" style="width: 100%">
+                Trial Prona
             </div>
             <div class="card">
                 <div class="card-header col-form-label">{{ __('Buscar paciente') }}</div>
