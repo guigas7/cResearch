@@ -40,7 +40,9 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados</a>
+                                @can ('view_list')
+                                    <a class="dropdown-item" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados</a>
+                                @endcan
                                 <a class="dropdown-item" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente</a>
                             </div>
                         </li>
@@ -50,7 +52,9 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados</a>
+                                @can ('view_list')
+                                    <a class="dropdown-item" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados</a>
+                                @endcan
                                 <a class="dropdown-item" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente</a>
                             </div>
                         </li>
