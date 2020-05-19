@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="flex-center full-height">
-    <div class="content">
+    <div class="content up">
         <div class="title m-b-md">
             Cepeti
         </div>
@@ -29,6 +29,7 @@
                 <li>
                     <a class="options cloroquina" href="{{ url('/cl/pacientes/buscar') }}">Procurar paciente (Trial Cloroquina)</a>
                 </li>
+                <hr class="sep">
                 @can ('view_list')
                     <li>
                         <a class="options prona" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados (Trial Prona)</a>
