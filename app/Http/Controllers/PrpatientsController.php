@@ -38,8 +38,8 @@ class PrpatientsController extends Controller
      */
     public function create()
     {
-        $hospitais = Hospital::select('id', 'name')->where('pr', 1)->get();
-        return view('prpatients.create', compact('hospitais'));
+        $hospitals = Hospital::select('id', 'name')->where('pr', 1)->get();
+        return view('prpatients.create', compact('hospitals'));
     }
 
     /**
@@ -161,5 +161,43 @@ class PrpatientsController extends Controller
     public function destroy(Prpatient $patient)
     {
         //
+    }
+
+
+    /**
+     * Show the form to search for a patient.
+     *
+     * @param  \App\Patient  $patient
+     * @return \Illuminate\Http\Response
+     */
+    public function search()
+    {
+        $hospitals = Hospital::select('id', 'name')->where('pr', 1)->get();
+        return view('prpatients.search', compact('hospitals'));
+    }
+
+    /**
+     * finds specified patient.
+     *
+     * @param  \App\Patient  $patient
+     * @return \Illuminate\Http\Response
+     */
+    public function find(Request $request)
+    {
+        $credentials = ['login' => 'plantonista']; // fixed user
+        $credentials = array_merge($credentials, $request->only('password')); // gets access key
+        if (Auth::check() || Auth::attempt($credentials, 1)) {
+            // Authentication passed...
+            $hospital = Hospital::findOrFail($request->hospital);
+            $patient = $hospital->findPatientPr($request->prontuario);
+            if ($patient == null) {
+                $message = 'Paciente ' . $request->prontuario . ' não foi randomizado em ' . $hospital->name;
+                throw ValidationException::withMessages(['prontuario' => $message]);
+            } else {
+                return view('prpatients.show', compact('patient'));
+            }
+        } else { // if not authenticated
+            throw ValidationException::withMessages(['password' => 'Chave de acesso inválida']);
+        } 
     }
 }

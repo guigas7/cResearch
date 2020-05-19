@@ -1,30 +1,26 @@
 @extends('layouts.app')
 
 @section('head')
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+
+    <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="/css/patients.css">
     <link rel="stylesheet" type="text/css" href="/css/form.css">
 @endsection
-    <style type="text/css">
-    [type="radio"]:checked,
-    [type="radio"]:not(:checked) {
-        position: absolute;
-        left: -9999px;
-    }
-</style>
+
 @section('content')
-<div class="container">
+<div class="container cent">
     <div class="row justify-content-center">
         <div class="content">
-            <div class="title controle m-b-md" style="width: 100%">
-                Trial Prona
+            <div class="title" style="width: 100%">
+                Trial Cloroquina
             </div>
-            <div class="cent fixedw">
-                <div class="card">
-                    <div class="card-header col-form-label">{{ __('Randomizar novo paciente') }}</div>
+            <div class="card">
+                <div class="card-header col-form-label">{{ __('Buscar paciente') }}</div>
 
-                    <div class="card-body">
-                        <div class="cent">
-                            <form method="POST" action="/pr/pacientes">
+                <div class="card-body">
+                    <div class="cent">
+                        <form method="POST" action="/pr/pacientes/buscar">
                             @csrf
 
                             <div class="form-group row">
@@ -46,7 +42,7 @@
                                 <label for="hospital" class="col-md-5 col-form-label text-md-center">{{ __('Hospital') }}</label>
 
                                 <div class="col-md-5">
-                                    <select id="hospital" name="hospital" class="select-css">
+                                    <select id="hospital" name="hospital">
                                     @foreach ($hospitals as $hospital)
                                         <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
                                     @endforeach
@@ -62,7 +58,7 @@
                                     <br>
                                     <p class="description text-md-center">pode ser encontrada no formulário do redcap</p>
                                 </div>
-                                
+                            
 
                                 <div class="col-md-5">
                                     <input id="password" type="text" class="form-control @error('password') is-invalid @enderror" name="password" value="{{ old('password') }}" required autofocus>
@@ -76,22 +72,16 @@
                             </div>
                             <hr>
                             @endguest
-                            <br>
 
+                            <br>
                             <div class="form-group row mb-0">
-                                <button id="enviar" type="submit" class="btn btn-primary pbt">
-                                    {{ __('Randomizar') }}
+                                <button id="enviar" type="submit" class="btn btn-primary bt">
+                                    {{ __('Buscar') }}
                                 </button>
                             </div>
-
                         </form>
-                        </div>
-                        
                     </div>
                 </div>
-            </div>
-            <div class="title pcontrole m-b-md" style="width: 100%">
-                Trial Prona
             </div>
         </div>
     </div>

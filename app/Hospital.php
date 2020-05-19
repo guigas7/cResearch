@@ -93,6 +93,11 @@ class Hospital extends Model
         return $this->patientsCl->where('prontuario', $prontuario)->first();
     }
 
+    public function findPatientPr($prontuario)
+    {
+        return $this->patientsPr->where('prontuario', $prontuario)->first();
+    }
+
     /**
      * The attributes that are mass assignable.
      *

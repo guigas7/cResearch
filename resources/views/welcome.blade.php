@@ -21,13 +21,30 @@
             </div>
 
             <div class="links">
-                <a class="options cloroquina" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados (Trial Cloroquina)</a>
-                <br>
-                <a class="options cloroquina" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente (Trial Cloroquina)</a>
-                <br>
-                <a class="options prona" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados (Trial Prona)</a>
-                <br>
-                <a class="options prona" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente (Trial Prona)</a>
+                <ul>
+                    @can ('view_list')
+                        <li>
+                            <a class="options cloroquina" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados (Trial Cloroquina)</a>
+                        </li>
+                    @endcan
+                    <li>
+                        <a class="options cloroquina" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente (Trial Cloroquina)</a>
+                    </li>
+                    <li>
+                        <a class="options cloroquina" href="{{ url('/cl/pacientes/buscar') }}">Procurar paciente (Trial Cloroquina)</a>
+                    </li>
+                    @can ('view_list')
+                        <li>
+                            <a class="options prona" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados (Trial Prona)</a>
+                        </li>
+                    @endcan
+                    <li>
+                        <a class="options prona" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente (Trial Prona)</a>
+                    </li>
+                    <li>
+                        <a class="options prona" href="{{ url('/pr/pacientes/buscar') }}">Procurar paciente (Trial Prona)</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

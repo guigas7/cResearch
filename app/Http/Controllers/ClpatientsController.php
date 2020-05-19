@@ -210,6 +210,8 @@ class ClpatientsController extends Controller
             } else {
                 return view('clpatients.show', compact('patient'));
             }
-        }
+        } else { // if not authenticated
+            throw ValidationException::withMessages(['password' => 'Chave de acesso inválida']);
+        } 
     }
 }
