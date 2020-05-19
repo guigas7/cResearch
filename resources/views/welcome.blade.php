@@ -21,7 +21,7 @@
             </div>
 
             <div class="links">
-                <ul>
+                <ul class="opt">
                     @can ('view_list')
                         <li>
                             <a class="options cloroquina" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados (Trial Cloroquina)</a>

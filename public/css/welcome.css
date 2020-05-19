@@ -76,3 +76,10 @@ html, body {
 .up {
   margin-top: -15%;
 }
+
+.opt {
+    font-size: large;
+    list-style: none;
+    font-weight: bold;
+    margin-left: -40px;
+}
