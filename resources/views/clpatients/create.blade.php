@@ -51,6 +51,11 @@
                                         <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('hospital')
+                                    <span class="invalid-feedback d-block" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                                 </div>
                             </div>
                             <hr>
@@ -67,6 +72,11 @@
                                         <input type="radio" id="vent-off" name="ventilator" value="0">
                                         <label for="vent-off">Não</label>
                                     </p>
+                                    @error('ventilator')
+                                        <span class="invalid-feedback d-block" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
                             <hr>

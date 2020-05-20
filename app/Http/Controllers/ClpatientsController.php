@@ -9,7 +9,9 @@ use App\User;
 use App\Hospital;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class ClpatientsController extends Controller
 {
@@ -54,7 +56,7 @@ class ClpatientsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validatePatient($request);
+        $this->validatePatient($request)->validate();
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
@@ -199,7 +201,7 @@ class ClpatientsController extends Controller
      */
     public function find(Request $request)
     {
-        $this->validateSearch($request);
+        $this->validateSearch($request)->validate();
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
@@ -219,26 +221,37 @@ class ClpatientsController extends Controller
 
     protected function validatePatient(Request $request)
     {
-        return request()->validate([
-            'hospital' => ['require d', 'integer'],
+        $messages = [
+            'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado'
+        ];
+        return Validator::make($request->all(), [
+            'hospital' => ['required', 'integer'],
             'ventilator' => ['required', 'boolean'],
-            'protuario' => ['required', 'max:50',
-                Rule::unique('App\Clpatient,prontuario')->where(function ($query) {
-                    return $query->where('hospital_id', $request->hospital);
+            'prontuario' => ['required', 'numeric',
+                Rule::unique('App\Clpatient', 'prontuario')->where(function ($query) {
+                    return $query->where('hospital_id', request('hospital'));
                 })],
             'password' => ['sometimes', 'string', 'required'],
-        ]);
+        ], $messages);
     }
 
     protected function validateSearch(Request $request)
     {
-        return request()->validate([
-            'hospital' => ['required', 'integer'],
-            'protuario' => ['required', 'max:50',
-                Rule::exists('App\Clpatient,prontuario')->where(function ($query) {
-                    $query->where('hospital_id', $request->hospital);
+        $messages = [
+            'prontuario.exists' => 'Paciente :input não foi randomizado no hospital selecionado',
+            'hospital.exists'  => 'O hospital selecionado não faz parte desse trial',
+        ];
+        return Validator::make($request->all(), [
+            'hospital' => ['required', 'integer',
+                Rule::exists('App\Hospital', 'id')->where(function ($query) {
+                    $query->where('cl', 1);
                 })],
+            'prontuario' => ['required', 'numeric',
+                Rule::exists('App\Clpatient', 'prontuario')->where(function ($query) {
+                    $query->where('hospital_id', request('hospital'));
+                 })
+            ],
             'password' => ['sometimes', 'string', 'required'],
-        ]);
+        ], $messages);
     }
 }
