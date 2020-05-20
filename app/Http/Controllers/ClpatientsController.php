@@ -9,8 +9,8 @@ use App\User;
 use App\Hospital;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
 
 class ClpatientsController extends Controller
@@ -208,12 +208,7 @@ class ClpatientsController extends Controller
             // Authentication passed...
             $hospital = Hospital::findOrFail($request->hospital);
             $patient = $hospital->findPatientCl($request->prontuario);
-            if ($patient == null) {
-                $message = 'Paciente ' . $request->prontuario . ' não foi randomizado em ' . $hospital->name;
-                throw ValidationException::withMessages(['prontuario' => $message]);
-            } else {
-                return view('clpatients.show', compact('patient'));
-            }
+            return view('clpatients.show', compact('patient'));
         } else { // if not authenticated
             throw ValidationException::withMessages(['password' => 'Chave de acesso inválida']);
         } 
