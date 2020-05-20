@@ -54,6 +54,7 @@ class ClpatientsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validatePatient($request);
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
@@ -198,6 +199,7 @@ class ClpatientsController extends Controller
      */
     public function find(Request $request)
     {
+        $this->validateSearch($request);
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
@@ -213,5 +215,30 @@ class ClpatientsController extends Controller
         } else { // if not authenticated
             throw ValidationException::withMessages(['password' => 'Chave de acesso inválida']);
         } 
+    }
+
+    protected function validatePatient(Request $request)
+    {
+        return request()->validate([
+            'hospital' => ['require d', 'integer'],
+            'ventilator' => ['required', 'boolean'],
+            'protuario' => ['required', 'max:50',
+                Rule::unique('App\Clpatient,prontuario')->where(function ($query) {
+                    return $query->where('hospital_id', $request->hospital);
+                })],
+            'password' => ['sometimes', 'string', 'required'],
+        ]);
+    }
+
+    protected function validateSearch(Request $request)
+    {
+        return request()->validate([
+            'hospital' => ['required', 'integer'],
+            'protuario' => ['required', 'max:50',
+                Rule::exists('App\Clpatient,prontuario')->where(function ($query) {
+                    $query->where('hospital_id', $request->hospital);
+                })],
+            'password' => ['sometimes', 'string', 'required'],
+        ]);
     }
 }
