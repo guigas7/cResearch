@@ -21,9 +21,13 @@ class Hospital extends Model
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
-                    $number = intval(end($pieces));
-                    $hospital->slug .= '--' . ($number + 1);
-                }
+                    if (count($pieces) == 1) { // first repetition
+                        $hospital->slug .= '--' . '1';
+                    } else {
+                        $number = intval(end($pieces));
+                        $hospital->slug .= '--' . ($number + 1);
+                    }
+                } 
             }
             $hospital->save();
         });
@@ -39,9 +43,13 @@ class Hospital extends Model
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
-                    $number = intval(end($pieces));
-                    $hospital->slug .= '--' . ($number + 1);
-                }
+                    if (count($pieces) == 1) { // first repetition
+                        $hospital->slug .= '--' . '1';
+                    } else {
+                        $number = intval(end($pieces));
+                        $hospital->slug .= '--' . ($number + 1);
+                    }
+                } 
             }
         });
     }

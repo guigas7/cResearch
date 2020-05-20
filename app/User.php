@@ -23,9 +23,13 @@ class User extends Authenticatable
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
-                    $number = intval(end($pieces));
-                    $user->slug .= '--' . ($number + 1);
-                }
+                    if (count($pieces) == 1) { // first repetition
+                        $user->slug .= '--' . '1';
+                    } else {
+                        $number = intval(end($pieces));
+                        $user->slug .= '--' . ($number + 1);
+                    }
+                } 
             }
             $user->save();
         });
@@ -41,10 +45,15 @@ class User extends Authenticatable
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
-                    $number = intval(end($pieces));
-                    $user->slug .= '--' . ($number + 1);
-                }
+                    if (count($pieces) == 1) { // first repetition
+                        $user->slug .= '--' . '1';
+                    } else {
+                        $number = intval(end($pieces));
+                        $user->slug .= '--' . ($number + 1);
+                    }
+                } 
             }
+            $user->save();
         });
     }
 

@@ -53,6 +53,7 @@ class PrpatientsController extends Controller
     public function store(Request $request)
     {
         $this->validatePatient($request)->validate();
+        dd('validou');
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
@@ -203,15 +204,12 @@ class PrpatientsController extends Controller
     protected function validatePatient(Request $request)
     {
         $messages = [
-            'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado'
+            'prontuario.unique' => 'Paciente :input já foi randomizado'
         ];
         return Validator::make($request->all(), [
             'hospital' => ['required', 'integer'],
             'ventilator' => ['required', 'boolean'],
-            'prontuario' => ['required', 'numeric',
-                Rule::unique('App\Prpatient', 'prontuario')->where(function ($query) {
-                    return $query->where('hospital_id', request('hospital'));
-                })],
+            'prontuario' => ['required', 'numeric', 'unique:App\Prpatient,id'],
             'password' => ['sometimes', 'string', 'required'],
         ], $messages);
     }
@@ -219,7 +217,7 @@ class PrpatientsController extends Controller
     protected function validateSearch(Request $request)
     {
         $messages = [
-            'prontuario.exists' => 'Paciente :input não foi randomizado no hospital selecionado',
+            'prontuario.exists' => 'Paciente :input não foi randomizado',
             'hospital.exists'  => 'O hospital selecionado não faz parte desse trial',
         ];
         return Validator::make($request->all(), [
