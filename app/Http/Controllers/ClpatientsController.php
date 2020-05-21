@@ -225,7 +225,8 @@ class ClpatientsController extends Controller
             'prontuario' => ['required', 'numeric',
                 Rule::unique('App\Clpatient', 'prontuario')->where(function ($query) {
                     return $query->where('hospital_id', request('hospital'));
-                })],
+                })
+            ],
             'password' => ['sometimes', 'string', 'required'],
         ], $messages);
     }
