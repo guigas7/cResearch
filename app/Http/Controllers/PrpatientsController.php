@@ -204,12 +204,12 @@ class PrpatientsController extends Controller
     protected function validatePatient(Request $request)
     {
         $messages = [
-            'prontuario.unique' => 'Paciente :input já foi randomizado'
+            'prontuario.unique' => 'Paciente :input já foi randomizado',
         ];
         return Validator::make($request->all(), [
             'hospital' => ['required', 'integer'],
             'ventilator' => ['required', 'boolean'],
-            'prontuario' => ['required', 'numeric', 'unique:App\Prpatient,id'],
+            'prontuario' => ['required', 'numeric', 'unique:App\Prpatient,prontuario'],
             'password' => ['sometimes', 'string', 'required'],
         ], $messages);
     }
@@ -217,7 +217,7 @@ class PrpatientsController extends Controller
     protected function validateSearch(Request $request)
     {
         $messages = [
-            'prontuario.exists' => 'Paciente :input não foi randomizado',
+            'prontuario.exists' => 'Paciente :input não foi randomizado no hospital selecionado',
             'hospital.exists'  => 'O hospital selecionado não faz parte desse trial',
         ];
         return Validator::make($request->all(), [
