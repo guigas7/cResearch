@@ -209,7 +209,11 @@ class PrpatientsController extends Controller
         return Validator::make($request->all(), [
             'hospital' => ['required', 'integer'],
             'ventilator' => ['required', 'boolean'],
-            'prontuario' => ['required', 'numeric', 'unique:App\Prpatient,prontuario'],
+            'prontuario' => ['required', 'numeric', 
+                Rule::unique('App\Prpatient', 'prontuario')->where(function ($query) {
+                    return $query->where('hospital_id', request('hospital'));
+                })],
+            ],
             'password' => ['sometimes', 'string', 'required'],
         ], $messages);
     }
