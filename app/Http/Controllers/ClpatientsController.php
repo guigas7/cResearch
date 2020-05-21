@@ -56,10 +56,11 @@ class ClpatientsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validatePatient($request)->validate();
+        $this->validatePassword($request->only('password'))->validate();
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
+            $this->validatePatient($request)->validate();
             // Authentication passed...
             $hospital = Hospital::findOrFail($request->hospital);
             // Busca se há paciente sem estudo
@@ -201,10 +202,11 @@ class ClpatientsController extends Controller
      */
     public function find(Request $request)
     {
-        $this->validateSearch($request)->validate();
+        $this->validatePassword($request->only('password'))->validate();
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
+            $this->validateSearch($request)->validate();
             // Authentication passed...
             $hospital = Hospital::findOrFail($request->hospital);
             $patient = $hospital->findPatientCl($request->prontuario);
@@ -217,7 +219,7 @@ class ClpatientsController extends Controller
     protected function validatePatient(Request $request)
     {
         $messages = [
-            'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado'
+            'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado',
         ];
         return Validator::make($request->all(), [
             'hospital' => ['required', 'integer'],
@@ -227,6 +229,15 @@ class ClpatientsController extends Controller
                     return $query->where('hospital_id', request('hospital'));
                 })
             ],
+        ], $messages);
+    }
+
+    protected function validatePassword($request)
+    {
+        $messages = [
+            'password'  => 'Chave de acesso inválida',
+        ];
+        return Validator::make($request, [
             'password' => ['sometimes', 'string', 'required'],
         ], $messages);
     }
@@ -247,7 +258,6 @@ class ClpatientsController extends Controller
                     $query->where('hospital_id', request('hospital'));
                  })
             ],
-            'password' => ['sometimes', 'string', 'required'],
         ], $messages);
     }
 }
