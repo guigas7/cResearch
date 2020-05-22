@@ -156,7 +156,8 @@ class ClpatientsController extends Controller
      */
     public function edit(Clpatient $patient)
     {
-        //   
+        $patient = Clpatient::with('hospital')->find($patient->id);
+        return view('clpatients.edit', compact('patient'));
     }
 
     /**
@@ -168,7 +169,20 @@ class ClpatientsController extends Controller
      */
     public function update(Request $request, Clpatient $patient)
     {
-        //
+        $messages = [
+            'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado',
+        ];
+        Validator::make($request->all(), [
+            'prontuario' => ['required', 'numeric',
+                Rule::unique('App\Clpatient', 'prontuario')->where(function ($query) {
+                    return $query->where('hospital_id', request('hospital'));
+                })
+            ],
+        ], $messages);
+        $patient->update([
+            'prontuario' => $request->prontuario,
+        ]);
+        return redirect('/cl/pacientes/' . $article->slug);
     }
 
     /**
@@ -179,7 +193,11 @@ class ClpatientsController extends Controller
      */
     public function destroy(Clpatient $patient)
     {
-        //
+        $patient->update([
+            'prontuario' => NULL,
+            'inserted_on' => NULL,
+        ]);
+        return redirect('clpatients.index');
     }
 
     /**

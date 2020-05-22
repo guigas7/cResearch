@@ -20,9 +20,10 @@ Route::post('/cl/pacientes', 					'ClpatientsController@store')	->name('clpatien
 Route::get('/cl/pacientes/criar', 				'ClpatientsController@create')	->name('clpatients.create');
 Route::post('/cl/pacientes/buscar', 			'ClpatientsController@find')	->name('clpatients.find');
 Route::get('/cl/pacientes/buscar', 				'ClpatientsController@search')	->name('clpatients.search');
-Route::post('/cl/pacientes/editar', 			'ClpatientsController@update')	->name('clpatients.update')	->middleware('can:edit');
-Route::get('/cl/pacientes/editar/{patient}', 	'ClpatientsController@edit')	->name('clpatients.edit')	->middleware('can:edit');
+Route::put('/cl/pacientes/{patient}', 			'ClpatientsController@update')	->name('clpatients.update')	->middleware('can:edit');
+Route::get('/cl/pacientes/{patient}/editar/', 	'ClpatientsController@edit')	->name('clpatients.edit')	->middleware('can:edit');
 Route::get('/cl/pacientes/{patient}', 			'ClpatientsController@show')	->name('clpatients.show')	->middleware('can:search');
+Route::delete('/cl/pacientes/{patient}', 			'ClpatientsController@destroy')	->name('clpatients.delete')	->middleware('can:edit');
 
 Route::get('/pr/pacientes', 					'PrpatientsController@index')	->name('prpatients.index')	->middleware('can:view_list');
 Route::post('/pr/pacientes', 					'PrpatientsController@store')	->name('prpatients.store');
@@ -30,7 +31,7 @@ Route::get('/pr/pacientes/criar', 				'PrpatientsController@create')	->name('prp
 Route::post('/pr/pacientes/buscar', 			'PrpatientsController@find')	->name('prpatients.find');
 Route::get('/pr/pacientes/buscar', 				'PrpatientsController@search')	->name('prpatients.search');
 Route::post('/pr/pacientes/editar', 			'PrpatientsController@update')	->name('prpatients.update')	->middleware('can:edit');
-Route::get('/pr/pacientes/editar/{patient}', 	'PrpatientsController@edit')	->name('prpatients.edit')	->middleware('can:edit');
+Route::get('/pr/pacientes/{patient}/editar', 	'PrpatientsController@edit')	->name('prpatients.edit')	->middleware('can:edit');
 Route::get('/pr/pacientes/{patient}', 			'PrpatientsController@show')	->name('prpatients.show')	->middleware('can:search');
 
 Auth::routes(['verify' => false, 'reset' => false, 'register' => false]);
