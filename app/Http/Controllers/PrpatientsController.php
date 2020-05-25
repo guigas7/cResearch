@@ -103,17 +103,11 @@ class PrpatientsController extends Controller
                 }
             } // não preenche nenhum dos blocos novos
             // Makes email
-            $content.= "\nPróximos pacientes: ";
-            $p = Prpatient::whereNull('prontuario')
-                ->orderBy('id')->get();
-            foreach ($p as $pat) {
-                $content .= ($pat->study == 1 ? 'prona. ' : 'controle. ');
-            }
-            $content .= "\n";
+            $content .= $this->printStatus();
             // Send email
             Mail::raw($content, function($message) {
                 // $message->to('randomizacao.cepeti@gmail.com')
-                $message->to('jimhorton7@outlook.com')
+                $message->to(env('MAIL_TO', 'jimhorton7@outlook.com'))
                 ->subject('Novo paciente (Trial Prona/controle)');
             });
             return redirect(route('prpatients.show', $show));
@@ -172,11 +166,20 @@ class PrpatientsController extends Controller
     public function destroy(Request $request, Prpatient $patient)
     {
         if ($request->confirm) {
+            $content = 'Paciente ' . $patient->prontuario . ', do hospital ' . $patient->hospital->name . ' foi removido da randomização!';
             $patient->update([
                 'prontuario' => NULL,
                 'hospital_id' => NULL,
                 'inserted_on' => NULL,
             ]);
+            // Makes email
+            $content .= $this->printStatus();
+            // Send email
+            Mail::raw($content, function($message) {
+                // $message->to('randomizacao.cepeti@gmail.com')
+                $message->to(env('MAIL_TO', 'jimhorton7@outlook.com'))
+                ->subject('Paciente removido (Trial Prona/controle)');
+            });
             return redirect('/pr/pacientes/');
         } else {
             return redirect('/pr/pacientes/' . $patient->slug . '/editar');
@@ -274,5 +277,17 @@ class PrpatientsController extends Controller
                 })
             ],
         ], $messages);
+    }
+
+    protected function printStatus()
+    {
+        $cont = "";
+        $cont .= "\nPróximos pacientes: ";
+        $p = Prpatient::whereNull('prontuario')->orderBy('id')->get();
+        foreach ($p as $pat) {
+            $cont .= ($pat->study == 1 ? 'prona, ' : 'controle, ');
+        }
+        $cont .= "\n";
+        return $cont;
     }
 }

@@ -111,24 +111,11 @@ class ClpatientsController extends Controller
                 }
             } // não preenche nenhum dos blocos novos
             // Makes email
-            $hospitals = Hospital::all();
-            foreach ($hospitals as $hosp) {
-                $content .= "\n ---" . $hosp->name . "---\n";
-                for ($groups = 1; $groups >=0; $groups--) {
-                    $content.= ($groups == 1 ? "\tCom Ventilação: " : "\tSem Ventilação: ");
-                    $p = $hosp->patientsCl->whereNull('prontuario')
-                        ->sortBy('id')
-                        ->where('ventilator', $groups);
-                    foreach ($p as $pat) {
-                        $content .= ($pat->study == 1 ? 'cloroquina. ' : 'controle. ');
-                    }
-                    $content .= "\n";
-                }
-            }
+            $content .= $this->printStatus();
             // Send email
             Mail::raw($content, function($message) {
                 // $message->to('randomizacao.cepeti@gmail.com')
-                $message->to('jimhorton7@outlook.com')
+                $message->to(env('MAIL_TO', 'jimhorton7@outlook.com'))
                 ->subject('Novo paciente (Trial Cloroquina/controle)');
             });
             return redirect(route('clpatients.show', $show->slug));
@@ -186,10 +173,19 @@ class ClpatientsController extends Controller
     public function destroy(Request $request, Clpatient $patient)
     {
         if ($request->confirm) {
+            $content = 'Paciente ' . $patient->prontuario . ', do hospital ' . $patient->hospital->name . ' foi removido da randomização!';
             $patient->update([
                 'prontuario' => NULL,
                 'inserted_on' => NULL,
             ]);
+            // Makes email
+            $content .= $this->printStatus();
+            // Send email
+            Mail::raw($content, function($message) {
+                // $message->to('randomizacao.cepeti@gmail.com')
+                $message->to(env('MAIL_TO', 'jimhorton7@outlook.com'))
+                ->subject('Paciente removido (Trial Cloroquina/controle)');
+            });
             return redirect('/cl/pacientes/');
         } else {
             return redirect('/cl/pacientes/' . $patient->slug . '/editar');
@@ -287,5 +283,25 @@ class ClpatientsController extends Controller
                 })
             ],
         ], $messages);
+    }
+
+    protected function printStatus()
+    {
+        $cont = "";
+        $hospitals = Hospital::all();
+        foreach ($hospitals as $hosp) {
+            $cont .= "\n ---" . $hosp->name . "---\n";
+            for ($groups = 1; $groups >=0; $groups--) {
+                $cont .= ($groups == 1 ? "\tCom Ventilação: " : "\tSem Ventilação: ");
+                $p = $hosp->patientsCl->whereNull('prontuario')
+                    ->sortBy('id')
+                    ->where('ventilator', $groups);
+                foreach ($p as $pat) {
+                    $cont .= ($pat->study == 1 ? 'cloroquina. ' : 'controle. ');
+                }
+                $cont .= "\n";
+            }
+        }
+        return $cont;
     }
 }
