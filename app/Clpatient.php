@@ -54,29 +54,31 @@ class Clpatient extends Model
                     }
                 } 
             }
-            $cl_patient->save();
         });
  
         static::updating(function ($cl_patient) {
             $oldpatient = Clpatient::findOrFail($cl_patient->id);
-            if ($oldpatient->prontuario != $cl_patient->prontuario) { // se o nome foi alterado, então altera slug também
-                $cl_patient->slug = str_slug($cl_patient->prontuario);
- 
-                $latestSlug =
-                Clpatient::whereRaw("slug RLIKE '^{$cl_patient->slug}(--[0-9]*)?$'")
-                    ->latest('slug')
-                    ->pluck('slug');
-                if ($latestSlug->first() != null) {
-                    $pieces = explode('--', $latestSlug->first());
-                    if (count($pieces) == 1) { // first repetition
-                        $cl_patient->slug .= '--' . '1';
-                    } else {
-                        $number = intval(end($pieces));
-                        $cl_patient->slug .= '--' . ($number + 1);
-                    }
-                } 
+            if (is_null($cl_patient->prontuario)) {
+                $cl_patient->slug = null;
+            } else {
+                if ($oldpatient->prontuario != $cl_patient->prontuario) { // se o nome foi alterado, então altera slug também
+                    $cl_patient->slug = str_slug($cl_patient->prontuario);
+    
+                    $latestSlug =
+                    Clpatient::whereRaw("slug RLIKE '^{$cl_patient->slug}(--[0-9]*)?$'")
+                        ->latest('slug')
+                        ->pluck('slug');
+                    if ($latestSlug->first() != null) {
+                        $pieces = explode('--', $latestSlug->first());
+                        if (count($pieces) == 1) { // first repetition
+                            $cl_patient->slug .= '--' . '1';
+                        } else {
+                            $number = intval(end($pieces));
+                            $cl_patient->slug .= '--' . ($number + 1);
+                        }
+                    } 
+                }
             }
-            $cl_patient->save();
         });
 	}
 }

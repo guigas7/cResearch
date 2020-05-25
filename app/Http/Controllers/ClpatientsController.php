@@ -131,7 +131,7 @@ class ClpatientsController extends Controller
                 $message->to('jimhorton7@outlook.com')
                 ->subject('Novo paciente (Trial Cloroquina/controle)');
             });
-            return redirect(route('clpatients.show', $show));
+            return redirect(route('clpatients.show', $show->slug));
         } else { // if not authenticated
             throw ValidationException::withMessages(['password' => 'Chave de acesso inválida']);
         } 
@@ -182,13 +182,17 @@ class ClpatientsController extends Controller
      * @param  \App\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Clpatient $patient)
+    public function destroy(Request $request, Clpatient $patient)
     {
-        $patient->update([
-            'prontuario' => NULL,
-            'inserted_on' => NULL,
-        ]);
-        return redirect('clpatients.index');
+        if ($request->confirm) {
+            $patient->update([
+                'prontuario' => NULL,
+                'inserted_on' => NULL,
+            ]);
+            return redirect('/cl/pacientes/');
+        } else {
+            return redirect('/cl/pacientes/' . $patient->slug . '/editar');
+        }
     }
 
     /**
@@ -275,7 +279,7 @@ class ClpatientsController extends Controller
         $messages = [
             'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado',
         ];
-        Validator::make($request->all(), [
+        return Validator::make($request->all(), [
             'prontuario' => ['required', 'numeric',
                 Rule::unique('App\Clpatient', 'prontuario')->where(function ($query) {
                     return $query->where('hospital_id', request('hospital'));

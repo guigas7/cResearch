@@ -29,7 +29,6 @@ class Hospital extends Model
                     }
                 } 
             }
-            $hospital->save();
         });
  
         static::updating(function ($hospital) {
