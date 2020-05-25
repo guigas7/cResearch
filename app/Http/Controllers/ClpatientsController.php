@@ -169,16 +169,7 @@ class ClpatientsController extends Controller
      */
     public function update(Request $request, Clpatient $patient)
     {
-        $messages = [
-            'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado',
-        ];
-        Validator::make($request->all(), [
-            'prontuario' => ['required', 'numeric',
-                Rule::unique('App\Clpatient', 'prontuario')->where(function ($query) {
-                    return $query->where('hospital_id', request('hospital'));
-                })
-            ],
-        ], $messages);
+        $this->validateEdit($request)->validate();
         $patient->update([
             'prontuario' => $request->prontuario,
         ]);
@@ -275,6 +266,20 @@ class ClpatientsController extends Controller
                 Rule::exists('App\Clpatient', 'prontuario')->where(function ($query) {
                     $query->where('hospital_id', request('hospital'));
                  })
+            ],
+        ], $messages);
+    }
+
+    protected function validateEdit(Request $request)
+    {
+        $messages = [
+            'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado',
+        ];
+        Validator::make($request->all(), [
+            'prontuario' => ['required', 'numeric',
+                Rule::unique('App\Clpatient', 'prontuario')->where(function ($query) {
+                    return $query->where('hospital_id', request('hospital'));
+                })
             ],
         ], $messages);
     }
