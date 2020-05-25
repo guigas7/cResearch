@@ -58,7 +58,7 @@ class Prpatient extends Model
  
         static::updating(function ($patient) {
             $oldpatient = Prpatient::findOrFail($patient->id);
-            if (is_null($cl_patient->prontuario)) {
+            if (is_null($patient->prontuario)) {
                 $patient->slug = null;
             } else {
                 if ($oldpatient->prontuario != $patient->prontuario) { // se o nome foi alterado, então altera slug também

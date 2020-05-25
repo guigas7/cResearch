@@ -22,7 +22,7 @@
                 <dd class="controle"><b> - Controle</b></dd>
             </dl>
                 @foreach ($groups as $key => $value)
-                    <div class="sidebar {{ ($key != 1 ? 'vLine' : '') }}">
+                    <div class="sidebar {{ ($key != 1 ? 'vLine' : 'lul') }}">
                         <h2>{{ $value }}</h2>
                         <ul class="style1">
                             @foreach ($patients as $patient)

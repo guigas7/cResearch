@@ -45,7 +45,7 @@
 
                             <br>
                             <div class="form-group row mb-0">
-                                <button id="enviar" type="submit" class="btn btn-primary bt">
+                                <button id="enviar" type="submit" class="btn btn-primary pbt">
                                     {{ __('Editar') }}
                                 </button>
                             </div>
@@ -65,7 +65,8 @@
                                 @method('DELETE')
 
                                 <div class="form-group row">
-                                    <label  class="col-form-label col-md-10 offset-md-1 text-md-center">Ao apagar o paciente, será liberada uma vaga para o grupo {{ $patient->study ? 'Prona' : 'Controle' }} aos pacientes do hospital {{ $patient->hospital->name }} {{ $patient->ventilator ? 'com' : 'sem' }} ventilação mecânica</label>
+                                    <label  class="col-form-label col-md-10 offset-md-1 text-md-center">Ao apagar o
+                                    paciente {{ $patient->prontuario }}, será liberada uma vaga para o grupo {{ $patient->study ? 'Prona' : 'Controle' }}</label>
                                 </div>
                                 <hr>
 
@@ -83,7 +84,7 @@
 
                                 <br>
                                 <div class="form-group row mb-0">
-                                    <button id="enviar" type="submit" class="btn btn-primary bt">
+                                    <button id="enviar" type="submit" class="btn btn-primary pbt">
                                         {{ __('Apagar') }}
                                     </button>
                                 </div>

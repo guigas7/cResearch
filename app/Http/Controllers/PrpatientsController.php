@@ -104,8 +104,8 @@ class PrpatientsController extends Controller
             } // não preenche nenhum dos blocos novos
             // Makes email
             $content.= "\nPróximos pacientes: ";
-            $p = $hospital->patientsPr->whereNull('prontuario')
-                ->sortBy('id');
+            $p = Prpatient::whereNull('prontuario')
+                ->orderBy('id')->get();
             foreach ($p as $pat) {
                 $content .= ($pat->study == 1 ? 'prona. ' : 'controle. ');
             }
@@ -142,7 +142,7 @@ class PrpatientsController extends Controller
     public function edit(Prpatient $patient)
     {
         $patient = Prpatient::with('hospital')->find($patient->id);
-        return view('Prpatients.edit', compact('patient'));
+        return view('prpatients.edit', compact('patient'));
     }
 
     /**
@@ -154,7 +154,9 @@ class PrpatientsController extends Controller
      */
     public function update(Request $request, Prpatient $patient)
     {
+        request()->merge(['hospital' => $patient->hospital->id]);
         $this->validateEdit($request)->validate();
+        request()->merge(['hospital' => $patient->hospital->id]);
         $patient->update([
             'prontuario' => $request->prontuario,
         ]);
@@ -167,11 +169,12 @@ class PrpatientsController extends Controller
      * @param  \App\Patient  $patient
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Prpatient $patient)
+    public function destroy(Request $request, Prpatient $patient)
     {
         if ($request->confirm) {
             $patient->update([
                 'prontuario' => NULL,
+                'hospital_id' => NULL,
                 'inserted_on' => NULL,
             ]);
             return redirect('/pr/pacientes/');

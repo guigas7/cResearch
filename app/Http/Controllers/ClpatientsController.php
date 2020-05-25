@@ -169,6 +169,7 @@ class ClpatientsController extends Controller
      */
     public function update(Request $request, Clpatient $patient)
     {
+        request()->merge(['hospital' => $patient->hospital->id]);
         $this->validateEdit($request)->validate();
         $patient->update([
             'prontuario' => $request->prontuario,
