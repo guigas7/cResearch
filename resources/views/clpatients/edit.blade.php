@@ -24,7 +24,7 @@
 
                     <div class="card-body">
                         <div class="cent">
-                            <form method="POST" action="/cl/pacientes/{{ $patient }}">
+                            <form method="POST" action="/cl/pacientes/{{ $patient->slug }}">
                             @csrf
                             @method('PUT')
 
@@ -60,12 +60,12 @@
 
                     <div class="card-body">
                         <div class="cent">
-                            <form method="POST" action="/cl/pacientes/{{ $patient }}">
+                            <form method="POST" action="/cl/pacientes/{{ $patient->slug }}">
                                 @csrf
                                 @method('DELETE')
 
                                 <div class="form-group row">
-                                    <label  class="col-form-label text-md-center">{{ __('Ao apagar o paciente, será liberada uma vaga para o grupo {{ $patient->study ? 'Cloroquina' : 'Controle' }} aos pacientes do hospital {{ $patient->hospital->name }} {{ $patient->ventilator ? 'com' : 'sem' }} ventilação mecânica) }}</label>
+                                    <label  class="col-form-label col-md-10 offset-md-1 text-md-center">Ao apagar o paciente, será liberada uma vaga para o grupo {{ $patient->study ? 'Cloroquina' : 'Controle' }} aos pacientes do hospital {{ $patient->hospital->name }} {{ $patient->ventilator ? 'com' : 'sem' }} ventilação mecânica</label>
                                 </div>
                                 <hr>
 

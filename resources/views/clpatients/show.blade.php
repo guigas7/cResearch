@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-<div class="container">
+<div class="container mb-5">
     <div class="row justify-content-center">
         <div class="content">
             <div class="title" style="width: 100%">
@@ -18,7 +18,9 @@
     </div>
 </div>
 
-<a class="btn btn-primary bt" href="{{ url('/cl/pacientes/{{ $patient }}/editar') }}">
-    {{ __('Editar') }}
-</a>
+    <div class="cent d-table">
+        <a class="btn btn-primary bt" href="{{ url('/cl/pacientes/' . $patient->slug . '/editar') }}">
+            {{ __('Editar') }}
+        </a>
+    </div>
 @endsection

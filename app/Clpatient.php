@@ -54,6 +54,7 @@ class Clpatient extends Model
                     }
                 } 
             }
+            $cl_patient->save();
         });
  
         static::updating(function ($cl_patient) {
@@ -75,6 +76,7 @@ class Clpatient extends Model
                     }
                 } 
             }
+            $cl_patient->save();
         });
 	}
 }

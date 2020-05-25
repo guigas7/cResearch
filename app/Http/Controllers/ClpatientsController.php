@@ -182,7 +182,7 @@ class ClpatientsController extends Controller
         $patient->update([
             'prontuario' => $request->prontuario,
         ]);
-        return redirect('/cl/pacientes/' . $article->slug);
+        return redirect('/cl/pacientes/' . $patient->slug);
     }
 
     /**
