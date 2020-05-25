@@ -21,9 +21,9 @@ Route::get('/cl/pacientes/criar', 				'ClpatientsController@create')	->name('clp
 Route::post('/cl/pacientes/buscar', 			'ClpatientsController@find')	->name('clpatients.find');
 Route::get('/cl/pacientes/buscar', 				'ClpatientsController@search')	->name('clpatients.search');
 Route::put('/cl/pacientes/{patient}', 			'ClpatientsController@update')	->name('clpatients.update')	->middleware('can:edit');
-Route::get('/cl/pacientes/{patient}/editar/', 	'ClpatientsController@edit')	->name('clpatients.edit')	->middleware('can:edit');
+Route::get('/cl/pacientes/{patient}/editar', 	'ClpatientsController@edit')	->name('clpatients.edit')	->middleware('can:edit');
 Route::get('/cl/pacientes/{patient}', 			'ClpatientsController@show')	->name('clpatients.show')	->middleware('can:search');
-Route::delete('/cl/pacientes/{patient}', 			'ClpatientsController@destroy')	->name('clpatients.delete')	->middleware('can:edit');
+Route::delete('/cl/pacientes/{patient}', 		'ClpatientsController@destroy')	->name('clpatients.delete')	->middleware('can:edit');
 
 Route::get('/pr/pacientes', 					'PrpatientsController@index')	->name('prpatients.index')	->middleware('can:view_list');
 Route::post('/pr/pacientes', 					'PrpatientsController@store')	->name('prpatients.store');
