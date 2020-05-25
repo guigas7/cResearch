@@ -36,44 +36,48 @@ class Prpatient extends Model
     {
         parent::boot();
  
-        static::creating(function ($pr_patient) {
-            if (!is_null($pr_patient->prontuario)) {
-                $pr_patient->slug = str_slug($pr_patient->prontuario);
+        static::creating(function ($patient) {
+            if (!is_null($patient->prontuario)) {
+                $patient->slug = str_slug($patient->prontuario);
      
                 $latestSlug =
-                Prpatient::whereRaw("slug RLIKE '^{$pr_patient->slug}(--[0-9]*)?$'")
+                Prpatient::whereRaw("slug RLIKE '^{$patient->slug}(--[0-9]*)?$'")
                     ->latest('slug')
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
                     if (count($pieces) == 1) { // first repetition
-                        $pr_patient->slug .= '--' . (1);
+                        $patient->slug .= '--' . (1);
                     } else {
                         $number = intval(end($pieces));
-                        $pr_patient->slug .= '--' . ($number + 1);
+                        $patient->slug .= '--' . ($number + 1);
                     }
                 } 
             }
         });
  
-        static::updating(function ($pr_patient) {
-            $oldpatient = Prpatient::findOrFail($pr_patient->id);
-            if ($oldpatient->prontuario != $pr_patient->prontuario) { // se o nome foi alterado, então altera slug também
-                $pr_patient->slug = str_slug($pr_patient->prontuario);
- 
-                $latestSlug =
-                Prpatient::whereRaw("slug RLIKE '^{$pr_patient->slug}(--[0-9]*)?$'")
-                    ->latest('slug')
-                    ->pluck('slug');
-                if ($latestSlug->first() != null) {
-                    $pieces = explode('--', $latestSlug->first());
-                    if (count($pieces) == 1) { // first repetition
-                        $pr_patient->slug .= '--' . (1);
-                    } else {
-                        $number = intval(end($pieces));
-                        $pr_patient->slug .= '--' . ($number + 1);
-                    }
-                } 
+        static::updating(function ($patient) {
+            $oldpatient = Prpatient::findOrFail($patient->id);
+            if (is_null($cl_patient->prontuario)) {
+                $patient->slug = null;
+            } else {
+                if ($oldpatient->prontuario != $patient->prontuario) { // se o nome foi alterado, então altera slug também
+                    $patient->slug = str_slug($patient->prontuario);
+     
+                    $latestSlug =
+                    Prpatient::whereRaw("slug RLIKE '^{$patient->slug}(--[0-9]*)?$'")
+                        ->latest('slug')
+                        ->pluck('slug');
+                    if ($latestSlug->first() != null) {
+                        $pieces = explode('--', $latestSlug->first());
+                        if (count($pieces) == 1) { // first repetition
+                            $patient->slug .= '--' . (1);
+                        } else {
+                            $number = intval(end($pieces));
+                            $patient->slug .= '--' . ($number + 1);
+                        }
+                    } 
+                }
             }
         });
 	}

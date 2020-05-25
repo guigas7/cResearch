@@ -141,7 +141,8 @@ class PrpatientsController extends Controller
      */
     public function edit(Prpatient $patient)
     {
-        //   
+        $patient = Prpatient::with('hospital')->find($patient->id);
+        return view('Prpatients.edit', compact('patient'));
     }
 
     /**
@@ -153,7 +154,11 @@ class PrpatientsController extends Controller
      */
     public function update(Request $request, Prpatient $patient)
     {
-        //
+        $this->validateEdit($request)->validate();
+        $patient->update([
+            'prontuario' => $request->prontuario,
+        ]);
+        return redirect('/pr/pacientes/' . $patient->slug);
     }
 
     /**
@@ -164,7 +169,15 @@ class PrpatientsController extends Controller
      */
     public function destroy(Prpatient $patient)
     {
-        //
+        if ($request->confirm) {
+            $patient->update([
+                'prontuario' => NULL,
+                'inserted_on' => NULL,
+            ]);
+            return redirect('/pr/pacientes/');
+        } else {
+            return redirect('/pr/pacientes/' . $patient->slug . '/editar');
+        }
     }
 
 
@@ -242,6 +255,20 @@ class PrpatientsController extends Controller
                 Rule::exists('App\Prpatient', 'prontuario')->where(function ($query) {
                     $query->where('hospital_id', request('hospital'));
                  })
+            ],
+        ], $messages);
+    }
+
+    protected function validateEdit(Request $request)
+    {
+        $messages = [
+            'prontuario.unique' => 'Paciente :input já foi randomizado no hospital selecionado',
+        ];
+        return Validator::make($request->all(), [
+            'prontuario' => ['required', 'numeric',
+                Rule::unique('App\Prpatient', 'prontuario')->where(function ($query) {
+                    return $query->where('hospital_id', request('hospital'));
+                })
             ],
         ], $messages);
     }

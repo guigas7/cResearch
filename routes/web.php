@@ -33,6 +33,7 @@ Route::get('/pr/pacientes/buscar', 				'PrpatientsController@search')	->name('pr
 Route::post('/pr/pacientes/editar', 			'PrpatientsController@update')	->name('prpatients.update')	->middleware('can:edit');
 Route::get('/pr/pacientes/{patient}/editar', 	'PrpatientsController@edit')	->name('prpatients.edit')	->middleware('can:edit');
 Route::get('/pr/pacientes/{patient}', 			'PrpatientsController@show')	->name('prpatients.show')	->middleware('can:search');
+Route::delete('/pr/pacientes/{patient}', 		'PrpatientsController@destroy')	->name('prpatients.delete')	->middleware('can:edit');
 
 Auth::routes(['verify' => false, 'reset' => false, 'register' => false]);
 // ['verify' => false, 'reset' => false, 'register' => false]
