@@ -42,10 +42,15 @@
 
                                     <div class="col-md-5">
                                         <select id="hospital" name="hospital" class="select-css">
-                                        @foreach ($hospitals as $hospital)
-                                            <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
-                                        @endforeach
-                                    </select>
+                                            @foreach ($hospitals as $hospital)
+                                                <option value="{{ $hospital->id }}">{{ $hospital->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('hospital')
+                                            <span class="invalid-feedback d-block" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                 </div>
                                 <hr>

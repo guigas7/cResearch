@@ -42,13 +42,17 @@ class Clpatient extends Model
      
                 $latestSlug =
                 Clpatient::whereRaw("slug RLIKE '^{$cl_patient->slug}(--[0-9]*)?$'")
-                    ->latest('id')
+                    ->latest('slug')
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
-                    $number = intval(end($pieces));
-                    $cl_patient->slug .= '--' . ($number + 1);
-                }
+                    if (count($pieces) == 1) { // first repetition
+                        $cl_patient->slug .= '--' . '1';
+                    } else {
+                        $number = intval(end($pieces));
+                        $cl_patient->slug .= '--' . ($number + 1);
+                    }
+                } 
             }
         });
  
@@ -59,13 +63,17 @@ class Clpatient extends Model
  
                 $latestSlug =
                 Clpatient::whereRaw("slug RLIKE '^{$cl_patient->slug}(--[0-9]*)?$'")
-                    ->latest('id')
+                    ->latest('slug')
                     ->pluck('slug');
                 if ($latestSlug->first() != null) {
                     $pieces = explode('--', $latestSlug->first());
-                    $number = intval(end($pieces));
-                    $cl_patient->slug .= '--' . ($number + 1);
-                }
+                    if (count($pieces) == 1) { // first repetition
+                        $cl_patient->slug .= '--' . '1';
+                    } else {
+                        $number = intval(end($pieces));
+                        $cl_patient->slug .= '--' . ($number + 1);
+                    }
+                } 
             }
         });
 	}

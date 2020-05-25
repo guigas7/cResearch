@@ -10,6 +10,8 @@ use App\Hospital;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class PrpatientsController extends Controller
 {
@@ -50,9 +52,11 @@ class PrpatientsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validatePassword($request->only('password'))->validate();
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
+            $this->validatePatient($request)->validate();
             // Authentication passed...
             $hospital = Hospital::findOrFail($request->hospital);
             $next = $hospital->nextEmptySlotPr();
@@ -184,20 +188,61 @@ class PrpatientsController extends Controller
      */
     public function find(Request $request)
     {
+        $this->validatePassword($request->only('password'))->validate();
         $credentials = ['login' => 'plantonista']; // fixed user
         $credentials = array_merge($credentials, $request->only('password')); // gets access key
         if (Auth::check() || Auth::attempt($credentials, 1)) {
+            $this->validateSearch($request)->validate();
             // Authentication passed...
             $hospital = Hospital::findOrFail($request->hospital);
             $patient = $hospital->findPatientPr($request->prontuario);
-            if ($patient == null) {
-                $message = 'Paciente ' . $request->prontuario . ' não foi randomizado em ' . $hospital->name;
-                throw ValidationException::withMessages(['prontuario' => $message]);
-            } else {
-                return view('prpatients.show', compact('patient'));
-            }
+            return view('prpatients.show', compact('patient'));
         } else { // if not authenticated
             throw ValidationException::withMessages(['password' => 'Chave de acesso inválida']);
         } 
+    }
+
+    protected function validatePatient(Request $request)
+    {
+        $messages = [
+            'prontuario.unique' => 'Paciente :input já foi randomizado',
+        ];
+        return Validator::make($request->all(), [
+            'hospital' => ['required', 'integer'],
+            'prontuario' => ['required', 'numeric', 
+                Rule::unique('App\Prpatient', 'prontuario')->where(function ($query) {
+                    return $query->where('hospital_id', request('hospital'));
+                })
+            ],
+        ], $messages);
+    }
+
+    protected function validatePassword($request)
+    {
+        $messages = [
+            'password'  => 'Chave de acesso inválida',
+        ];
+        return Validator::make($request, [
+            'password' => ['sometimes', 'string', 'required'],
+        ], $messages);
+    }
+
+    protected function validateSearch(Request $request)
+    {
+        $messages = [
+            'prontuario.exists' => 'Paciente :input não foi randomizado no hospital selecionado',
+            'hospital.exists'  => 'O hospital selecionado não faz parte desse trial',
+        ];
+        return Validator::make($request->all(), [
+            'hospital' => ['required', 'integer',
+                Rule::exists('App\Hospital', 'id')->where(function ($query) {
+                    $query->where('pr', 1);
+                })],
+            'prontuario' => ['required', 'numeric',
+                Rule::exists('App\Prpatient', 'prontuario')->where(function ($query) {
+                    $query->where('hospital_id', request('hospital'));
+                 })
+            ],
+        ], $messages);
     }
 }

@@ -17,4 +17,8 @@
         </div>
     </div>
 </div>
+
+<a class="btn btn-primary bt" href="{{ url('/cl/pacientes/' . $patient->slug . '/editar') }}">
+    {{ __('Editar') }}
+</a>
 @endsection
