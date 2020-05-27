@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'HomeController@welcome')->name('welcome');
 
 Route::get('/cl/pacientes', 					'ClpatientsController@index')	->name('clpatients.index')	->middleware('can:view_list');
-Route::post('/cl/pacientes', 					'ClpatientsController@store')	->name('clpatients.store');
-Route::get('/cl/pacientes/criar', 				'ClpatientsController@create')	->name('clpatients.create');
+// Route::post('/cl/pacientes', 					'ClpatientsController@store')	->name('clpatients.store');
+// Route::get('/cl/pacientes/criar', 				'ClpatientsController@create')	->name('clpatients.create');
 Route::post('/cl/pacientes/buscar', 			'ClpatientsController@find')	->name('clpatients.find');
 Route::get('/cl/pacientes/buscar', 				'ClpatientsController@search')	->name('clpatients.search');
 Route::put('/cl/pacientes/{patient}', 			'ClpatientsController@update')	->name('clpatients.update')	->middleware('can:edit');

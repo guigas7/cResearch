@@ -18,29 +18,41 @@
 
         <div class="links">
             <ul class="opt">
-                @can ('view_list')
+                @if (Route::has('clpatients.index'))
+                    @can ('view_list')
+                        <li>
+                            <a class="options cloroquina" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados (Trial Cloroquina)</a>
+                        </li>
+                    @endcan
+                @endif
+                @if (Route::has('clpatients.create'))
                     <li>
-                        <a class="options cloroquina" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados (Trial Cloroquina)</a>
+                        <a class="options cloroquina" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente (Trial Cloroquina)</a>
                     </li>
-                @endcan
-                <li>
-                    <a class="options cloroquina" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente (Trial Cloroquina)</a>
-                </li>
-                <li>
-                    <a class="options cloroquina" href="{{ url('/cl/pacientes/buscar') }}">Procurar paciente (Trial Cloroquina)</a>
-                </li>
+                @endif
+                @if (Route::has('clpatients.search'))
+                    <li>
+                        <a class="options cloroquina" href="{{ url('/cl/pacientes/buscar') }}">Procurar paciente (Trial Cloroquina)</a>
+                    </li>
+                @endif
                 <hr class="sep">
-                @can ('view_list')
+                @if (Route::has('prpatients.index'))
+                    @can ('view_list')
+                        <li>
+                            <a class="options prona" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados (Trial Prona)</a>
+                        </li>
+                    @endcan
+                @endif
+                @if (Route::has('prpatients.create'))
                     <li>
-                        <a class="options prona" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados (Trial Prona)</a>
+                        <a class="options prona" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente (Trial Prona)</a>
                     </li>
-                @endcan
-                <li>
-                    <a class="options prona" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente (Trial Prona)</a>
-                </li>
-                <li>
-                    <a class="options prona" href="{{ url('/pr/pacientes/buscar') }}">Procurar paciente (Trial Prona)</a>
-                </li>
+                @endif
+                @if (Route::has('prpatients.search'))
+                    <li>
+                        <a class="options prona" href="{{ url('/pr/pacientes/buscar') }}">Procurar paciente (Trial Prona)</a>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

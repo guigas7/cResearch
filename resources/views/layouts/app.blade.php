@@ -40,11 +40,17 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                @can ('view_list')
-                                    <a class="dropdown-item" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados</a>
-                                @endcan
-                                <a class="dropdown-item" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente</a>
-                                <a class="dropdown-item" href="{{ url('/cl/pacientes/buscar') }}">Buscar paciente</a>
+                                @if (Route::has('clpatients.index'))
+                                    @can ('view_list')
+                                        <a class="dropdown-item" href="{{ url('/cl/pacientes') }}">Pacientes já randomizados</a>
+                                    @endcan
+                                @endif
+                                @if (Route::has('clpatients.create'))
+                                    <a class="dropdown-item" href="{{ url('/cl/pacientes/criar') }}">Randomizar novo paciente</a>
+                                @endif
+                                @if (Route::has('clpatients.search'))
+                                    <a class="dropdown-item" href="{{ url('/cl/pacientes/buscar') }}">Buscar paciente</a>
+                                @endif
                             </div>
                         </li>
 
@@ -53,11 +59,17 @@
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                @can ('view_list')
-                                    <a class="dropdown-item" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados</a>
-                                @endcan
-                                <a class="dropdown-item" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente</a>
-                                <a class="dropdown-item" href="{{ url('/pr/pacientes/buscar') }}">Buscar paciente</a>
+                                @if (Route::has('prpatients.index'))
+                                    @can ('view_list')
+                                        <a class="dropdown-item" href="{{ url('/pr/pacientes') }}">Pacientes já randomizados</a>
+                                    @endcan
+                                @endif
+                                @if (Route::has('prpatients.create'))
+                                    <a class="dropdown-item" href="{{ url('/pr/pacientes/criar') }}">Randomizar novo paciente</a>
+                                @endif
+                                @if (Route::has('prpatients.search'))
+                                    <a class="dropdown-item" href="{{ url('/pr/pacientes/buscar') }}">Buscar paciente</a>
+                                @endif
                             </div>
                         </li>
                     </ul>
